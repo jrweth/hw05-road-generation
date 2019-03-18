@@ -11,19 +11,35 @@ import ShaderProgram, {Shader} from './rendering/gl/ShaderProgram';
 // Define an object with application parameters and button callbacks
 // This will be referred to by dat.GUI's functions that add GUI elements.
 const controls = {
-  'Elevation Seed': 10
+  'Elevation Seed': 10,
+  'Map Type': 1
 };
 
-// Add controls to the gui
+//gui controls
 const gui = new DAT.GUI();
+
+//stats for rendering
 const stats = Stats();
+
+//the canvas to draw on
 const canvas = <HTMLCanvasElement> document.getElementById('canvas');
+
+//gl context
 const gl = <WebGL2RenderingContext> canvas.getContext('webgl2');
+
+//camera
 const camera = new Camera(vec3.fromValues(50, 50, 10), vec3.fromValues(50, 50, 0));
+
+//renderer
 const renderer = new OpenGLRenderer(canvas);
 
+//the terrain to render
 let terrain: Terrain;
+
+//time tick
 let time: number = 0.0;
+
+//shader program
 let flat: ShaderProgram;
 
 function loadScene() {
@@ -33,17 +49,13 @@ function loadScene() {
 }
 
 function drawScene() {
-
   camera.update();
   stats.begin();
   flat.setTime(time++);
   gl.viewport(0, 0, window.innerWidth, window.innerHeight);
   renderer.clear();
-  renderer.render(camera, flat, [terrain]);
+  renderer.render(camera, flat, [terrain], controls["Map Type"]);
   stats.end();
-
-    // Tell the browser to call `tick` again whenever it renders a new frame
-    //requestAnimationFrame(tick);
 }
 
 function loadAndDrawScene() {
@@ -54,6 +66,8 @@ function loadAndDrawScene() {
 function addControls() {
   let eSeed = gui.add(controls, 'Elevation Seed', 1, 100).step(1).listen();
   eSeed.onChange(loadAndDrawScene);
+  let mapType = gui.add(controls, 'Map Type', {'elevation': 1, 'land/sea': 2}).listen();
+  mapType.onChange(loadAndDrawScene);
 }
 
 function initStats() {
@@ -89,7 +103,10 @@ function main() {
     new Shader(gl.FRAGMENT_SHADER, require('./shaders/flat-frag.glsl')),
   ]);
 
-
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  camera.setAspectRatio(window.innerWidth / window.innerHeight);
+  camera.updateProjectionMatrix();
+  flat.setDimensions(window.innerWidth, window.innerHeight);
 
   window.addEventListener('resize', function() {
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -97,11 +114,6 @@ function main() {
     camera.updateProjectionMatrix();
     flat.setDimensions(window.innerWidth, window.innerHeight);
   }, false);
-
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  camera.setAspectRatio(window.innerWidth / window.innerHeight);
-  camera.updateProjectionMatrix();
-  flat.setDimensions(window.innerWidth, window.innerHeight);
 
   // Start the render loop
   // Initial call to load scene

@@ -11,14 +11,27 @@ in vec4 fs_Col;
 out vec4 out_Col;
 
 void main() {
-  int mapType = 1;
-  //straight map
-  if(mapType == 1) {
-    if(fs_Col.x < 0.4) {
+  //water level
+  float waterLevel = 0.4;
+
+  //elevation map
+  if(u_MapType == 1) {
+    if(fs_Col.x < waterLevel) {
        out_Col = vec4(0.4, 0.4, 1.0, 1.0);
     }
     else {
-      out_Col = vec4(0.0, fs_Col.r, 0.0, 1.0);
+      out_Col = vec4(vec3(fs_Col.r), 1.0);
     }
+  }
+
+  //flat map
+  else if(u_MapType == 2) {
+    if(fs_Col.x < waterLevel) {
+       out_Col = vec4(0.4, 0.4, 1.0, 1.0);
+    }
+    else {
+      out_Col = vec4(vec3(0.8), 1.0);
+    }
+
   }
 }
