@@ -2,7 +2,7 @@ import {vec3} from 'gl-matrix';
 import * as Stats from 'stats-js';
 import * as DAT from 'dat-gui';
 import Square from './geometry/Square';
-import ScreenQuad from './geometry/ScreenQuad';
+import Terrain from './geometry/Terrain';
 import OpenGLRenderer from './rendering/gl/OpenGLRenderer';
 import Camera from './Camera';
 import {setGL} from './globals';
@@ -22,14 +22,14 @@ const gl = <WebGL2RenderingContext> canvas.getContext('webgl2');
 const camera = new Camera(vec3.fromValues(50, 50, 10), vec3.fromValues(50, 50, 0));
 const renderer = new OpenGLRenderer(canvas);
 
-let screenQuad: ScreenQuad;
+let terrain: Terrain;
 let time: number = 0.0;
 let flat: ShaderProgram;
 
 function loadScene() {
-  screenQuad = new ScreenQuad();
-  screenQuad.setElevationSeed(controls["Elevation Seed"]);
-  screenQuad.create();
+  terrain = new Terrain();
+  terrain.setElevationSeed(controls["Elevation Seed"]);
+  terrain.create();
 }
 
 function drawScene() {
@@ -39,7 +39,7 @@ function drawScene() {
   flat.setTime(time++);
   gl.viewport(0, 0, window.innerWidth, window.innerHeight);
   renderer.clear();
-  renderer.render(camera, flat, [screenQuad]);
+  renderer.render(camera, flat, [terrain]);
   stats.end();
 
     // Tell the browser to call `tick` again whenever it renders a new frame

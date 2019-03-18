@@ -3,7 +3,7 @@ import Drawable from '../rendering/gl/Drawable';
 import {gl} from '../globals';
 import Random from '../noise/random';
 
-class ScreenQuad extends Drawable {
+class Terrain extends Drawable {
   indices: Uint32Array;
   positions: Float32Array;
   colors: Float32Array;
@@ -91,4 +91,4 @@ class ScreenQuad extends Drawable {
   }
 };
 
-export default ScreenQuad;
+export default Terrain;
