@@ -32,6 +32,15 @@ void main() {
     else {
       out_Col = vec4(vec3(0.8), 1.0);
     }
+  }
 
+  //population density
+  if(u_MapType == 3) {
+    if(fs_Col.x < waterLevel) {
+       out_Col = vec4(0.4, 0.4, 1.0, 1.0);
+    }
+    else {
+      out_Col = vec4(vec3(fs_Col.g), 1.0);
+    }
   }
 }

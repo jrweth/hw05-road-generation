@@ -1,7 +1,7 @@
 import {vec2} from 'gl-matrix';
 import Drawable from '../rendering/gl/Drawable';
 import {gl} from '../globals';
-import Random from '../noise/random';
+import Noise from '../noise/noise';
 
 class Terrain extends Drawable {
   indices: Uint32Array;
@@ -9,7 +9,10 @@ class Terrain extends Drawable {
   colors: Float32Array;
   dimensions: vec2;
   divisions: vec2;
-  elevationSeed: number;
+  elevationSeed: number = 1.234;
+  populationSeed: number = 2.345;
+  populationPoints: vec2[];
+  numPopultationPoints: vec2 = vec2.fromValues(5, 4);
 
   constructor() {
     super();
@@ -20,6 +23,10 @@ class Terrain extends Drawable {
     this.elevationSeed = seed;
   }
 
+  setPopulationSeed(seed: number): void {
+    this.populationSeed = seed;
+  }
+
   setDimensions(dimensions: vec2): void {
     this.dimensions = dimensions;
   }
@@ -28,10 +35,32 @@ class Terrain extends Drawable {
     this.divisions = divisions;
   }
 
+  screenPosToWorlyPos(screenPos: vec2): vec2 {
+    let worleyX: number = ((1 + screenPos[0]) / 2.0) * this.numPopultationPoints[0];
+    let worleyY: number = ((1 + screenPos[1]) / 2.0) * this.numPopultationPoints[1];
+    let worleyPos: vec2 = vec2.fromValues(worleyX, worleyY);
+    return worleyPos;
+  }
+
+  worleyPosToScreenPos(worleyPos: vec2): vec2 {
+    return worleyPos;
+  }
+
+  getPopulationDensity(screenPos: vec2): number {
+    let worleyPos: vec2 = this.screenPosToWorlyPos(screenPos);
+    let closestPopPoint = Noise.getClosestWorleyPoint2d(worleyPos, this.numPopultationPoints, this.populationPoints);
+    return Math.pow(1 - (vec2.dist(worleyPos, closestPopPoint)/1.414), 3);
+  }
+
   create() {
     let indicies: number[] = [];
     let positions: number[] = [];
     let colors: number[] = [];
+
+    //set up the population centers
+    let popSeed = vec2.fromValues(this.populationSeed, 2.5456);
+    this.populationPoints = Noise.generateWorleyPoints2d(this.numPopultationPoints, popSeed);
+
     for(let i = 0; i <= this.divisions[0]; i++) {
       for(let j = 0; j <= this.divisions[1] ; j++) {
         let x = -1 + (2.0 * i / this.divisions[0]);
@@ -40,10 +69,10 @@ class Terrain extends Drawable {
 
         //get eleation from fbm
         let seed: vec2 = vec2.fromValues(this.elevationSeed, 13.322);
+        let elevation = Noise.fbm2to1(vec2.fromValues(3.0 * i / this.divisions[0], 3.0 * j / this.divisions[1]), seed);
+        let popDensity = this.getPopulationDensity(vec2.fromValues(x, y));
 
-        let elevation = Random.fbm2to1(vec2.fromValues(3.0 * i / this.divisions[0], 3.0 * j / this.divisions[1]), seed);
-        console.log(elevation);
-        colors.push(elevation, 0, 0, 1);
+        colors.push(elevation, popDensity, 0, 1);
 
         if(i < this.divisions[0] && j < this.divisions[1]) {
           let p1: number = (this.divisions[0] + 1) * i + j;
@@ -66,10 +95,6 @@ class Terrain extends Drawable {
     this.indices = new Uint32Array(indicies);
     this.positions = new Float32Array(positions);
     this.colors = new Float32Array(colors);
-    //this.colors = new Float32Array([1,0,0,1,
-    // 0,1,0,1,
-    // 0,0,1,1,
-    // 1,1,1,1]);
 
     this.generateIdx();
     this.generatePos();
@@ -87,7 +112,7 @@ class Terrain extends Drawable {
 
     this.numInstances = 1;
 
-    console.log(`Created ScreenQuad`);
+    console.log(`Created Terrain`);
   }
 };
 

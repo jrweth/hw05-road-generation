@@ -66,7 +66,7 @@ function loadAndDrawScene() {
 function addControls() {
   let eSeed = gui.add(controls, 'Elevation Seed', 1, 100).step(1).listen();
   eSeed.onChange(loadAndDrawScene);
-  let mapType = gui.add(controls, 'Map Type', {'elevation': 1, 'land/sea': 2}).listen();
+  let mapType = gui.add(controls, 'Map Type', {'elevation': 1, 'flat': 2, 'population density': 3}).listen();
   mapType.onChange(loadAndDrawScene);
 }
 
