@@ -9,10 +9,15 @@ class ScreenQuad extends Drawable {
   colors: Float32Array;
   dimensions: vec2;
   divisions: vec2;
+  elevationSeed: number;
 
   constructor() {
     super();
     this.divisions = vec2.fromValues(100, 100);
+  }
+
+  setElevationSeed(seed: number): void {
+    this.elevationSeed = seed;
   }
 
   setDimensions(dimensions: vec2): void {
@@ -34,9 +39,9 @@ class ScreenQuad extends Drawable {
         positions.push(x, y, 0, 1);
 
         //get eleation from fbm
-        let seed: vec2 = vec2.fromValues(9.13, 13.322);
+        let seed: vec2 = vec2.fromValues(this.elevationSeed, 13.322);
 
-        let elevation = Random.fbm2to1(vec2.fromValues(i / this.divisions[0], j / this.divisions[1]), seed);
+        let elevation = Random.fbm2to1(vec2.fromValues(3.0 * i / this.divisions[0], 3.0 * j / this.divisions[1]), seed);
         console.log(elevation);
         colors.push(elevation, 0, 0, 1);
 
