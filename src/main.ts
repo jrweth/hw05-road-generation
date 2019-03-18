@@ -18,35 +18,9 @@ let screenQuad: ScreenQuad;
 let time: number = 0.0;
 
 function loadScene() {
-  square = new Square();
-  square.create();
   screenQuad = new ScreenQuad();
   screenQuad.create();
 
-  // Set up instanced rendering data arrays here.
-  // This example creates a set of positional
-  // offsets and gradiated colors for a 100x100 grid
-  // of squares, even though the VBO data for just
-  // one square is actually passed to the GPU
-  let offsetsArray = [];
-  let colorsArray = [];
-  let n: number = 100.0;
-  for(let i = 0; i < n; i++) {
-    for(let j = 0; j < n; j++) {
-      offsetsArray.push(i);
-      offsetsArray.push(j);
-      offsetsArray.push(0);
-
-      colorsArray.push(i / n);
-      colorsArray.push(j / n);
-      colorsArray.push(1.0);
-      colorsArray.push(1.0); // Alpha channel
-    }
-  }
-  let offsets: Float32Array = new Float32Array(offsetsArray);
-  let colors: Float32Array = new Float32Array(colorsArray);
-  square.setInstanceVBOs(offsets, colors);
-  square.setNumInstances(n * n); // grid of "particles"
 }
 
 function main() {
@@ -78,13 +52,8 @@ function main() {
 
   const renderer = new OpenGLRenderer(canvas);
   renderer.setClearColor(0.2, 0.2, 0.2, 1);
-  gl.enable(gl.BLEND);
-  gl.blendFunc(gl.ONE, gl.ONE); // Additive blending
+  gl.enable(gl.DEPTH_TEST);
 
-  const instancedShader = new ShaderProgram([
-    new Shader(gl.VERTEX_SHADER, require('./shaders/instanced-vert.glsl')),
-    new Shader(gl.FRAGMENT_SHADER, require('./shaders/instanced-frag.glsl')),
-  ]);
 
   const flat = new ShaderProgram([
     new Shader(gl.VERTEX_SHADER, require('./shaders/flat-vert.glsl')),
@@ -95,18 +64,14 @@ function main() {
   function tick() {
     camera.update();
     stats.begin();
-    instancedShader.setTime(time);
     flat.setTime(time++);
     gl.viewport(0, 0, window.innerWidth, window.innerHeight);
     renderer.clear();
     renderer.render(camera, flat, [screenQuad]);
-    renderer.render(camera, instancedShader, [
-      square,
-    ]);
     stats.end();
 
     // Tell the browser to call `tick` again whenever it renders a new frame
-    requestAnimationFrame(tick);
+    //requestAnimationFrame(tick);
   }
 
   window.addEventListener('resize', function() {
