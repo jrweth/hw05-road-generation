@@ -40,7 +40,7 @@ let terrain: Terrain;
 let time: number = 0.0;
 
 //shader program
-let flat: ShaderProgram;
+let terrainShader: ShaderProgram;
 
 function loadScene() {
   terrain = new Terrain();
@@ -51,10 +51,10 @@ function loadScene() {
 function drawScene() {
   camera.update();
   stats.begin();
-  flat.setTime(time++);
+  terrainShader.setTime(time++);
   gl.viewport(0, 0, window.innerWidth, window.innerHeight);
   renderer.clear();
-  renderer.render(camera, flat, [terrain], controls["Map Type"]);
+  renderer.render(camera, terrainShader, [terrain], controls["Map Type"]);
   stats.end();
 }
 
@@ -98,21 +98,23 @@ function main() {
   gl.enable(gl.DEPTH_TEST);
 
 
-  flat = new ShaderProgram([
-    new Shader(gl.VERTEX_SHADER, require('./shaders/flat-vert.glsl')),
-    new Shader(gl.FRAGMENT_SHADER, require('./shaders/flat-frag.glsl')),
+  terrainShader = new ShaderProgram([
+    new Shader(gl.VERTEX_SHADER, require('./shaders/terrain-vert.glsl')),
+    new Shader(gl.FRAGMENT_SHADER, require('./shaders/terrain-frag.glsl')),
   ]);
+
+
 
   renderer.setSize(window.innerWidth, window.innerHeight);
   camera.setAspectRatio(window.innerWidth / window.innerHeight);
   camera.updateProjectionMatrix();
-  flat.setDimensions(window.innerWidth, window.innerHeight);
+  terrainShader.setDimensions(window.innerWidth, window.innerHeight);
 
   window.addEventListener('resize', function() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     camera.setAspectRatio(window.innerWidth / window.innerHeight);
     camera.updateProjectionMatrix();
-    flat.setDimensions(window.innerWidth, window.innerHeight);
+    terrainShader.setDimensions(window.innerWidth, window.innerHeight);
   }, false);
 
   // Start the render loop
