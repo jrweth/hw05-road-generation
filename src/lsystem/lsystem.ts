@@ -10,6 +10,7 @@ import {ScaleAngle} from "./draw-rule/scale-angle";
 import {StartBranch} from "./draw-rule/start-branch";
 import {EndBranch} from "./draw-rule/end-branch";
 import {DrawRule} from "./draw-rule/draw-rule";
+import {Draw} from "./draw-rule/draw";
 
 export enum SegmentStatus {
   OPEN = "open",
@@ -21,6 +22,7 @@ export class Segment{
   startPoint: vec2;
   endPoint: vec2;
   intersectionIds: number[];
+  rotation: number;
 }
 
 export class Intersection {
@@ -33,10 +35,10 @@ export class LSystem {
   axiom: string;
 
   //the segments already created
-  segments: Segment[];
+  segments: Segment[] = [];
 
   //the new propsed segments
-  newSegments: Segment[];
+  newSegments: Segment[] = [];
 
   //the constraints to check for each prospective segment
   constraints: Constraint[];
@@ -57,7 +59,7 @@ export class LSystem {
   options: any;
 
   //the current state of the turtle
-  turtle: Turtle = new Turtle;
+  turtle: Turtle = new Turtle();
 
   //the turtle stack
   turtleStack: Turtle[] = [];
@@ -85,27 +87,36 @@ export class LSystem {
   iterate(iterations: number): void {
     let nextString:string = '';
     let params: any ={iterations: iterations};
-    // for(let charIndex:number = 0; charIndex < this.curString.length; charIndex++) {
-    //   let func = this.xRules.get(char);
-    //   //if rule is found then use
-    //   if(func) {
-    //     nextString += func.apply(char, params);
-    //   }
-    //   //if no rule found then just retain the same character
-    //   else {
-    //     nextString += char;
-    //   }
-    // }
+    for(let charIndex:number = 0; charIndex < this.curString.length; charIndex++) {
+      let char = this.curString.charAt(charIndex);
+      let func = this.xRules.get(char);
+      //if rule is found then use
+      if(func) {
+        //special case for handling drawing
+        nextString += func.apply(char, params);
+      }
+      //if no rule found then just retain the same character
+      else {
+        nextString += char;
+      }
+    }
 
     this.curIteration++;
   }
 
   runExpansionIterations() {
+    this.curString = this.axiom;
     for(let i:number = 0; i < this.iterations; i++) {
       this.iterate(i);
     }
+    console.log(this.curString);
   }
 
+
+  addSegment(segment: Segment): Segment | null {
+    this.segments.push(segment);
+    return segment;
+  }
 
   runDrawRules() {
     //do the initial scaling
@@ -129,6 +140,7 @@ export class LSystem {
         this.turtle = func.draw(this.turtle, this.turtleStack, this.segments, this.newSegments, option);
       }
     }
+    console.log(this.segments);
   }
 
 
@@ -137,6 +149,7 @@ export class LSystem {
    * Add the standard rules based off Houdini codes
    */
   addStandardDrawRules(): void {
+    this.addDrawRule('F', new Draw({lsystem: this}));
     this.addDrawRule('+', new TurnRight());
     this.addDrawRule('-', new TurnLeft());
     this.addDrawRule('[', new StartBranch());

@@ -1,6 +1,7 @@
 import {vec3, vec4, mat4, mat3} from 'gl-matrix';
 import Drawable from './Drawable';
 import {gl} from '../../globals';
+import ShaderProgram from "./ShaderProgram";
 
 var activeProgram: WebGLProgram = null;
 
@@ -89,7 +90,8 @@ class InstancedShaderProgram {
       gl.uniform2f(this.unifDimensions, width, height);
     }
   }
-
+  setMapType(mapType: number) {
+  }
   setModelMatrix(model: mat4) {
     this.use();
     if (this.unifModel !== -1) {
@@ -173,6 +175,7 @@ class InstancedShaderProgram {
     // then advancing to a new value for the next four, then the next four, and
     // so on.
     gl.drawElementsInstanced(d.drawMode(), d.elemCount(), gl.UNSIGNED_INT, 0, d.numInstances);
+    console.log(d);
 
     if (this.attrPos != -1) gl.disableVertexAttribArray(this.attrPos);
     if (this.attrNor != -1) gl.disableVertexAttribArray(this.attrNor);

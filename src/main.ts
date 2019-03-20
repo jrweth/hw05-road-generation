@@ -1,18 +1,22 @@
 import {vec3} from 'gl-matrix';
 import * as Stats from 'stats-js';
 import * as DAT from 'dat-gui';
-import Square from './geometry/Square';
 import Terrain from './geometry/Terrain';
 import OpenGLRenderer from './rendering/gl/OpenGLRenderer';
 import Camera from './Camera';
 import {setGL} from './globals';
 import ShaderProgram, {Shader} from './rendering/gl/ShaderProgram';
+import InstancedShaderProgram from './rendering/gl/InstancedShaderProgram';
+import {LSystem} from "./lsystem/lsystem";
+import Roads from "./lsystem/roads";
+import RoadSegments from "./geometry/RoadSegments";
 
 // Define an object with application parameters and button callbacks
 // This will be referred to by dat.GUI's functions that add GUI elements.
 const controls = {
   'Elevation Seed': 10,
-  'Map Type': 1
+  'Map Type': 1,
+  'Iterations': 10
 };
 
 //gui controls
@@ -36,25 +40,45 @@ const renderer = new OpenGLRenderer(canvas);
 //the terrain to render
 let terrain: Terrain;
 
+let roadSegments: RoadSegments;
+
 //time tick
 let time: number = 0.0;
 
 //shader program
 let terrainShader: ShaderProgram;
 
+//road shader
+let roadShader: InstancedShaderProgram;
+
+//road lsystem
+let roadLSystem: LSystem;
+
 function loadScene() {
   terrain = new Terrain();
   terrain.setElevationSeed(controls["Elevation Seed"]);
   terrain.create();
+
+  roadSegments = new RoadSegments();
+  roadSegments.create();
+  roadLSystem = new Roads(controls.Iterations, {});
+  roadLSystem.runExpansionIterations();
+  roadLSystem.runDrawRules();
+  roadSegments.setInstanceVBOs(roadLSystem.segments);
+
 }
 
 function drawScene() {
   camera.update();
   stats.begin();
   terrainShader.setTime(time++);
+  roadShader.setTime(time);
   gl.viewport(0, 0, window.innerWidth, window.innerHeight);
   renderer.clear();
+  gl.useProgram(terrainShader.prog);
   renderer.render(camera, terrainShader, [terrain], controls["Map Type"]);
+  gl.useProgram(roadShader.prog);
+  renderer.render(camera, roadShader, [roadSegments]);
   stats.end();
 }
 
@@ -103,18 +127,25 @@ function main() {
     new Shader(gl.FRAGMENT_SHADER, require('./shaders/terrain-frag.glsl')),
   ]);
 
+  roadShader = new InstancedShaderProgram( [
+    new Shader(gl.VERTEX_SHADER, require('./shaders/road-vert.glsl')),
+    new Shader(gl.FRAGMENT_SHADER, require('./shaders/road-frag.glsl')),
+  ]);
+
 
 
   renderer.setSize(window.innerWidth, window.innerHeight);
   camera.setAspectRatio(window.innerWidth / window.innerHeight);
   camera.updateProjectionMatrix();
   terrainShader.setDimensions(window.innerWidth, window.innerHeight);
+  roadShader.setDimensions(window.innerWidth, window.innerHeight);
 
   window.addEventListener('resize', function() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     camera.setAspectRatio(window.innerWidth / window.innerHeight);
     camera.updateProjectionMatrix();
     terrainShader.setDimensions(window.innerWidth, window.innerHeight);
+    roadShader.setDimensions(window.innerWidth, window.innerHeight);
   }, false);
 
   // Start the render loop
