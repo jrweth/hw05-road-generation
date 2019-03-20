@@ -19,5 +19,16 @@ void main()
 {
   fs_Col = vs_Col;
   fs_Pos = vs_Pos;
-  gl_Position = vs_Pos;
+  //scale by width and height
+  fs_Pos.x = vs_Pos.x * vs_Col.x;
+  fs_Pos.y = vs_Pos.y * vs_Col.y;
+
+  //rotate
+  float s = sin(vs_Col.z);
+  float c = cos(vs_Col.z);
+  fs_Pos.xy = mat2(c, -s, s, c) * fs_Pos.xy;
+
+  //translate
+  fs_Pos.xy += vs_Translate.xy;
+  gl_Position = fs_Pos;
 }
