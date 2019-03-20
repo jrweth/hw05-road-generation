@@ -1,4 +1,4 @@
-import {vec3} from 'gl-matrix';
+import {vec2, vec3} from 'gl-matrix';
 import * as Stats from 'stats-js';
 import * as DAT from 'dat-gui';
 import Terrain from './geometry/Terrain';
@@ -55,7 +55,14 @@ let roadShader: InstancedShaderProgram;
 let roadLSystem: LSystem;
 
 function loadScene() {
+  let aspectRatio: number = window.innerWidth / window.innerHeight;
+  let divisions: vec2 = vec2.fromValues(Math.floor(aspectRatio * 100), 100);
+  let dimensions: vec2 = vec2.fromValues(window.innerWidth, window.innerHeight);
+
+
   terrain = new Terrain();
+  //terrain.setDivisions(divisions);
+  //terrain.setDimensions(dimensions);
   terrain.setElevationSeed(controls["Elevation Seed"]);
   terrain.create();
 
@@ -146,6 +153,7 @@ function main() {
     camera.updateProjectionMatrix();
     terrainShader.setDimensions(window.innerWidth, window.innerHeight);
     roadShader.setDimensions(window.innerWidth, window.innerHeight);
+
   }, false);
 
   // Start the render loop

@@ -8,11 +8,12 @@ class Terrain extends Drawable {
   positions: Float32Array;
   colors: Float32Array;
   dimensions: vec2;
-  divisions: vec2;
+  divisions: vec2 = vec2.fromValues(100, 100);
   elevationSeed: number = 1.234;
   populationSeed: number = 2.345;
   populationPoints: vec2[];
   numPopultationPoints: vec2 = vec2.fromValues(5, 4);
+  aspectRatio: number = 1;
 
   constructor() {
     super();
@@ -29,6 +30,7 @@ class Terrain extends Drawable {
 
   setDimensions(dimensions: vec2): void {
     this.dimensions = dimensions;
+    this.aspectRatio = dimensions[0] / dimensions[1];
   }
 
   setDivisions(divisions: vec2): void {
@@ -69,16 +71,16 @@ class Terrain extends Drawable {
 
         //get eleation from fbm
         let seed: vec2 = vec2.fromValues(this.elevationSeed, 13.322);
-        let elevation = Noise.fbm2to1(vec2.fromValues(3.0 * i / this.divisions[0], 3.0 * j / this.divisions[1]), seed);
+        let elevation = Noise.fbm2to1(vec2.fromValues(3.0 * i / this.divisions[0] * this.aspectRatio, 3.0 * j / this.divisions[1]), seed);
         let popDensity = this.getPopulationDensity(vec2.fromValues(x, y));
 
         colors.push(elevation, popDensity, 0, 1);
 
         if(i < this.divisions[0] && j < this.divisions[1]) {
-          let p1: number = (this.divisions[0] + 1) * i + j;
-          let p2: number = (this.divisions[0] + 1) * i + j + 1;
-          let p3: number = (this.divisions[0] + 1) * (i + 1) + j;
-          let p4: number = (this.divisions[0] + 1) * (i + 1) + j + 1;
+          let p1: number = (this.divisions[1] + 1) * i + j;
+          let p2: number = (this.divisions[1] + 1) * i + j + 1;
+          let p3: number = (this.divisions[1] + 1) * (i + 1) + j;
+          let p4: number = (this.divisions[1] + 1) * (i + 1) + j + 1;
 
           indicies.push(p1, p2, p3, p3, p2, p4);
         }
