@@ -12,7 +12,7 @@ class Terrain extends Drawable {
   elevationSeed: number = 1.234;
   populationSeed: number = 2.345;
   populationPoints: vec2[];
-  numPopultationPoints: vec2 = vec2.fromValues(5, 4);
+  numPopultationPoints: vec2 = vec2.fromValues(4, 3);
   aspectRatio: number = 1;
 
   constructor() {
@@ -44,6 +44,13 @@ class Terrain extends Drawable {
     return worleyPos;
   }
 
+  screenPosToGridPos(screenPos: vec2): vec2 {
+    let worleyX: number = ((1 + screenPos[0]) / 2.0) * this.numPopultationPoints[0];
+    let worleyY: number = ((1 + screenPos[1]) / 2.0) * this.numPopultationPoints[1];
+    let worleyPos: vec2 = vec2.fromValues(worleyX, worleyY);
+    return worleyPos;
+  }
+
   worleyPosToScreenPos(worleyPos: vec2): vec2 {
     return worleyPos;
   }
@@ -51,7 +58,15 @@ class Terrain extends Drawable {
   getPopulationDensity(screenPos: vec2): number {
     let worleyPos: vec2 = this.screenPosToWorlyPos(screenPos);
     let closestPopPoint = Noise.getClosestWorleyPoint2d(worleyPos, this.numPopultationPoints, this.populationPoints);
-    return Math.pow(vec2.dist(worleyPos, closestPopPoint)/1.414, 1);
+    if(closestPopPoint) {
+      return Math.pow((1-vec2.dist(worleyPos, closestPopPoint))/1.414, 2);
+    }
+    return 0;
+  }
+
+  getElevation(screenPos: vec2): number {
+    let gridPos: vec2 = this.screenPosToGridPos(screenPos);
+    return gridPos[0];
   }
 
   create() {

@@ -23,8 +23,10 @@ export class Turtle {
   segmentLength: number = 0.05;
   lengthScale: number = 0.9;
 
-  angle: number = 90;
+  angle: number = Math.PI / 4;
   angleScale: number = 0.9;
+
+  branchEnded: boolean = false;
 
 }
 
@@ -41,6 +43,7 @@ export function cloneTurtle(turtle: Turtle): Turtle {
   newTurtle.lengthScale = turtle.lengthScale;
   newTurtle.angle = turtle.angle;
   newTurtle.angleScale = turtle.angleScale;
+  newTurtle.branchEnded = turtle.branchEnded;
 
   return newTurtle;
 }

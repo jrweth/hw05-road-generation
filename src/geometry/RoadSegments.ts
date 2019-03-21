@@ -37,7 +37,6 @@ class RoadSegments extends InstancedDrawable {
     gl.bindBuffer(gl.ARRAY_BUFFER, this.bufPos);
     gl.bufferData(gl.ARRAY_BUFFER, this.positions, gl.STATIC_DRAW);
 
-    console.log(`Created Road Segment`);
   }
 
   setInstanceVBOs(segments: Segment[]) {
@@ -56,9 +55,6 @@ class RoadSegments extends InstancedDrawable {
       }
       length = vec2.dist(segments[i].startPoint, segments[i].endPoint);
       colors.push(length, width, segments[i].rotation, 0);
-
-
-
     }
 
     this.offsets = new Float32Array(offsets);

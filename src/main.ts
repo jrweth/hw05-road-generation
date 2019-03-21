@@ -15,7 +15,8 @@ import RoadSegments from "./geometry/RoadSegments";
 // This will be referred to by dat.GUI's functions that add GUI elements.
 const controls = {
   'Elevation Seed': 10,
-  'Map Type': 1,
+  'Road Seed': 5,
+  'Map Type': 3,
   'Iterations': 10
 };
 
@@ -68,7 +69,10 @@ function loadScene() {
 
   roadSegments = new RoadSegments();
   roadSegments.create();
-  roadLSystem = new Roads(controls.Iterations, {});
+  roadLSystem = new Roads(controls.Iterations, {
+    seed: controls["Road Seed"],
+    terrain: terrain
+  });
   roadLSystem.runExpansionIterations();
   roadLSystem.runDrawRules();
   roadSegments.setInstanceVBOs(roadLSystem.segments);
@@ -99,6 +103,8 @@ function addControls() {
   eSeed.onChange(loadAndDrawScene);
   let mapType = gui.add(controls, 'Map Type', {'elevation': 1, 'flat': 2, 'population density': 3}).listen();
   mapType.onChange(loadAndDrawScene);
+  let iter = gui.add(controls, 'Iterations', 1, 100).step(1).listen();
+  iter.onChange(loadAndDrawScene);
 }
 
 function initStats() {

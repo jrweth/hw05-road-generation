@@ -47,6 +47,14 @@ class Random {
 
   }
 
+  static interp2D(fracX: number, fracY: number, x1y1: number, x2y1: number, x1y2: number, x2y2: number): number {
+    let i1: number = this.mix(x1y1, x2y1, fracX);
+    let i2: number = this.mix(x1y2, x2y2, fracX);
+
+    return this.mix(i1, i2, fracY);
+
+  }
+
   static fbm2to1(p: vec2 , seed: vec2, persistence: number = 0.5, octaves: number = 8.0): number {
 
     let total: number = 0.0;

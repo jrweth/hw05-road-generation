@@ -11,7 +11,9 @@ export class TurnRight extends BaseDrawRule implements DrawRule {
       angle = parseFloat(options);
     }
 
+    console.log(turtle.dir);
     turtle.dir -= angle;
+    console.log(turtle.dir);
     return turtle;
   }
 }

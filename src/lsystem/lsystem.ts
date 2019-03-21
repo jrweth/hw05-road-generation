@@ -100,6 +100,7 @@ export class LSystem {
         nextString += char;
       }
     }
+    this.curString = nextString;
 
     this.curIteration++;
   }
@@ -109,7 +110,6 @@ export class LSystem {
     for(let i:number = 0; i < this.iterations; i++) {
       this.iterate(i);
     }
-    console.log(this.curString);
   }
 
 
@@ -137,10 +137,11 @@ export class LSystem {
           }
         }
 
-        this.turtle = func.draw(this.turtle, this.turtleStack, this.segments, this.newSegments, option);
+        if(char !== ']' && !this.turtle.branchEnded) {
+          this.turtle = func.draw(this.turtle, this.turtleStack, this.segments, this.newSegments, option);
+        }
       }
     }
-    console.log(this.segments);
   }
 
 

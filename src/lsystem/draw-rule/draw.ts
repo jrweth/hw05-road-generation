@@ -33,6 +33,9 @@ export class Draw extends BaseDrawRule implements DrawRule {
       turtle.pos = addSegment.endPoint;
       turtle.dir = addSegment.rotation;
     }
+    else {
+      turtle.branchEnded = true;
+    }
 
     return turtle;
   }

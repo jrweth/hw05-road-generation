@@ -175,7 +175,6 @@ class InstancedShaderProgram {
     // then advancing to a new value for the next four, then the next four, and
     // so on.
     gl.drawElementsInstanced(d.drawMode(), d.elemCount(), gl.UNSIGNED_INT, 0, d.numInstances);
-    console.log(d);
 
     if (this.attrPos != -1) gl.disableVertexAttribArray(this.attrPos);
     if (this.attrNor != -1) gl.disableVertexAttribArray(this.attrNor);

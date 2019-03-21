@@ -26,9 +26,14 @@ void main()
   //rotate
   float s = sin(vs_Col.z);
   float c = cos(vs_Col.z);
-  fs_Pos.xy = mat2(c, -s, s, c) * fs_Pos.xy;
+  fs_Pos.xy = mat2(c, s, -s, c) * fs_Pos.xy;
 
   //translate
-  fs_Pos.xy += vs_Translate.xy;
+  fs_Pos.x += vs_Translate.x;
+  fs_Pos.y += vs_Translate.y;
+  if(vs_Pos.x == 0.0) {
+//    fs_Pos.x
+  }
+
   gl_Position = fs_Pos;
 }
