@@ -59,7 +59,7 @@ class Terrain extends Drawable {
     let worleyPos: vec2 = this.screenPosToWorlyPos(screenPos);
     let closestPopPoint = Noise.getClosestWorleyPoint2d(worleyPos, this.numPopultationPoints, this.populationPoints);
     if(closestPopPoint) {
-      return Math.pow((1-vec2.dist(worleyPos, closestPopPoint))/1.414, 2);
+      return Math.pow((1-vec2.dist(worleyPos, closestPopPoint))/1.414, 4);
     }
     return 0;
   }

@@ -58,7 +58,6 @@ class RoadSegments extends InstancedDrawable {
       length = vec2.dist(startPos, endPos);
       colors.push(length, width, segments[i].rotation, 0);
     }
-    console.log(offsets);
 
     this.offsets = new Float32Array(offsets);
     this.colors = new Float32Array(colors);

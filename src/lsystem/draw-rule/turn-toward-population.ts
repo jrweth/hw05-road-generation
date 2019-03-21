@@ -45,7 +45,7 @@ export class TurnTowardPopulation extends BaseDrawRule implements DrawRule {
    */
   checkPopulationAtDirection(turtle: Turtle, newDir: number) : number {
 
-    let dist = 2 / (5 * this.terrain.numPopultationPoints[0]);
+    let dist = 0.04;
     let sum = 0;
     for(let i: number = 1; i < 6; i++) {
       let checkPoint: vec2 = vec2.create();

@@ -18,17 +18,14 @@ export class TurnAwayPopulation extends BaseDrawRule implements DrawRule {
 
   draw(turtle: Turtle, turtleStack: Turtle[], segments: Segment[], options: string) {
     //default to the current turtle roll angle
-    let maxAngle:number = turtle.angle;
-    if(parseFloat(options) > 0) {
-      maxAngle = parseFloat(options);
-    }
+    let maxAngle = Math.PI / 4;
 
     let bestDir = turtle.dir;
     let lowestSum = this.checkPopulationAtDirection(turtle, turtle.dir);
 
     //get five random angles to check
     for(let i = 0; i < 5; i++) {
-      let newDir: number = turtle.dir + this.prando.next(0, maxAngle * 2) - maxAngle;
+      let newDir: number = turtle.dir + this.prando.next(0, maxAngle) - maxAngle;
       let sum = this.checkPopulationAtDirection(turtle, newDir);
       if(sum < lowestSum) {
         bestDir = newDir;

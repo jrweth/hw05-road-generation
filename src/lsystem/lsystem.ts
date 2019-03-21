@@ -11,6 +11,7 @@ import {StartBranch} from "./draw-rule/start-branch";
 import {EndBranch} from "./draw-rule/end-branch";
 import {DrawRule} from "./draw-rule/draw-rule";
 import {Draw} from "./draw-rule/draw";
+import {VecMath} from "../utils/vec-math";
 
 export enum SegmentStatus {
   OPEN = "open",
@@ -25,7 +26,8 @@ export class Segment{
 }
 
 export class Intersection {
-  segmentsIds: number[];
+  inSegmentIds: number[];
+  outSegmentIds: number[];
   pos: vec2;
 }
 
@@ -70,6 +72,13 @@ export class LSystem {
     this.options = options;
     this.curIteration = 0;
 
+    let firstIntersection: Intersection = new Intersection();
+    firstIntersection.inSegmentIds = [];
+    firstIntersection.outSegmentIds = [];
+    firstIntersection.pos = vec2.fromValues(0,0);
+    this.intersections.push(firstIntersection);
+    this.turtle.lastIntersectionId = 0;
+
   }
 
   //add an expansion rule
@@ -112,20 +121,51 @@ export class LSystem {
 
 
   addSegment(startIntersectionId: number, endPos: vec2, rotation: number, roadType: RoadType): Segment | null {
-    //do the checks
+    //create possible segment
     let segment: Segment = new Segment();
+    let segmentId = this.segments.length;
     segment.startIntersectionId = startIntersectionId;
     segment.roadType = roadType;
     segment.rotation = rotation;
     segment.endIntersectionId = this.intersections.length;
-    this.segments.push(segment);
+
+    //do the checks
+    let nearestIntersectionId = this.findNearbyIntersectionId(endPos, 0.02);
+    if(nearestIntersectionId !== null) {
+      segment.endIntersectionId = nearestIntersectionId;
+      segment.rotation = VecMath.getRotationFromPoints(
+        this.intersections[startIntersectionId].pos,
+        this.intersections[nearestIntersectionId].pos
+      )
+      this.segments.push(segment);
+      this.intersections[startIntersectionId].outSegmentIds.push(segmentId);
+      this.intersections[nearestIntersectionId].inSegmentIds.push(segmentId);
+      return null;
+    }
 
     let endIntersection = new Intersection();
     endIntersection.pos = endPos;
-    endIntersection.segmentsIds = [this.segments.length];
+    endIntersection.inSegmentIds = [segmentId];
+    endIntersection.outSegmentIds = [];
+
+    this.intersections[startIntersectionId].outSegmentIds.push(this.segments.length);
+    this.segments.push(segment);
     this.intersections.push(endIntersection);
 
     return segment;
+  }
+
+  findNearbyIntersectionId(pos: vec2, distThreshold: number): number | null {
+    let closestDist: number = distThreshold;
+    let closestId: number | null = null;
+    for(let i = 0; i < this.intersections.length; i++) {
+      let dist = vec2.dist(pos, this.intersections[i].pos);
+      if(dist < closestDist) {
+        closestDist = dist;
+        closestId = i;
+      }
+    }
+    return closestId;
   }
 
   runDrawRules() {
@@ -147,8 +187,8 @@ export class LSystem {
           }
         }
 
-        if(char !== ']' && !this.turtle.branchEnded) {
-          this.turtle = func.draw(this.turtle, this.turtleStack, this.segments, option);
+        if(this.turtle && (!this.turtle.branchEnded || char == ']')) {
+            this.turtle = func.draw(this.turtle, this.turtleStack, this.segments, option);
         }
       }
     }

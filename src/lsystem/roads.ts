@@ -15,7 +15,7 @@ class Roads extends LSystem {
   }) {
     super(iterations, options);
 
-    this.axiom = 'FPFPFPFB';
+    this.axiom = 'FL';
     this.addStandardDrawRules();
 
     this.addDrawRule('P', new TurnTowardPopulation({
@@ -33,8 +33,8 @@ class Roads extends LSystem {
       terrain: this.options.terrain
     }));
 
-    this.addXRule('B', new XReplace('[--L]FSFSFSFSFSB'))
-    this.addXRule('L', new XReplace('FSFSFSFSFS'));
+    this.addXRule('B', new XReplace('[-LB][+LB]'))
+    this.addXRule('L', new XReplace('FPFPFPFPF[--L]PFPFPFPFPFPFPFFPFPFPFPF[++L]PFPFPFPFPFL'));
   }
 }
 
