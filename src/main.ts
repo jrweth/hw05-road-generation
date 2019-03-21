@@ -75,7 +75,7 @@ function loadScene() {
   });
   roadLSystem.runExpansionIterations();
   roadLSystem.runDrawRules();
-  roadSegments.setInstanceVBOs(roadLSystem.segments);
+  roadSegments.setInstanceVBOs(roadLSystem.segments, roadLSystem.intersections);
 
 }
 

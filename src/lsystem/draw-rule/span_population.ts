@@ -17,7 +17,7 @@ export class SpanPopulation extends BaseDrawRule implements DrawRule {
     this.terrain = options.terrain;
   }
 
-  draw(turtle: Turtle, turtleStack: Turtle[], segments: Segment[], newSegments: Segment[], options?: string) {
+  draw(turtle: Turtle, turtleStack: Turtle[], segments: Segment[], options?: string) {
 
     let rule: DrawRule;
     if(this.terrain.getPopulationDensity(turtle.pos) < 0.9) {
@@ -26,6 +26,6 @@ export class SpanPopulation extends BaseDrawRule implements DrawRule {
     else {
       rule = new TurnAwayPopulation(this.options);
     }
-    return rule.draw(turtle, turtleStack, segments, newSegments, options);
+    return rule.draw(turtle, turtleStack, segments, options);
   }
 }

@@ -12,7 +12,7 @@ export class RandomAngle extends BaseDrawRule implements DrawRule {
     this.prando = new Prando(options.seed);
   }
 
-  draw(turtle: Turtle, turtleStack: Turtle[], segments: Segment[], newSegments: Segment[], options: string) {
+  draw(turtle: Turtle, turtleStack: Turtle[], segments: Segment[], options: string) {
     //default to the current turtle roll angle
     let maxAngle:number = turtle.angle;
     if(parseFloat(options) > 0) {

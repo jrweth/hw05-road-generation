@@ -4,7 +4,7 @@ import {Turtle} from "../turtle";
 import {Segment} from "../lsystem";
 
 export class TurnLeft extends BaseDrawRule implements DrawRule {
-  draw(turtle: Turtle, turtleStack: Turtle[], segments: Segment[], newSegments: Segment[], options?: string) {
+  draw(turtle: Turtle, turtleStack: Turtle[], segments: Segment[], options?: string) {
 
     let angle: number = turtle.angle;
     if(!isNaN(parseFloat(options))) {

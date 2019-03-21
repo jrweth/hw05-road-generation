@@ -19,9 +19,8 @@ export enum SegmentStatus {
 
 export class Segment{
   roadType: RoadType;
-  startPoint: vec2;
-  endPoint: vec2;
-  intersectionIds: number[];
+  startIntersectionId: number;
+  endIntersectionId: number;
   rotation: number;
 }
 
@@ -37,8 +36,7 @@ export class LSystem {
   //the segments already created
   segments: Segment[] = [];
 
-  //the new propsed segments
-  newSegments: Segment[] = [];
+  intersections: Intersection[] = [];
 
   //the constraints to check for each prospective segment
   constraints: Constraint[];
@@ -113,8 +111,20 @@ export class LSystem {
   }
 
 
-  addSegment(segment: Segment): Segment | null {
+  addSegment(startIntersectionId: number, endPos: vec2, rotation: number, roadType: RoadType): Segment | null {
+    //do the checks
+    let segment: Segment = new Segment();
+    segment.startIntersectionId = startIntersectionId;
+    segment.roadType = roadType;
+    segment.rotation = rotation;
+    segment.endIntersectionId = this.intersections.length;
     this.segments.push(segment);
+
+    let endIntersection = new Intersection();
+    endIntersection.pos = endPos;
+    endIntersection.segmentsIds = [this.segments.length];
+    this.intersections.push(endIntersection);
+
     return segment;
   }
 
@@ -138,7 +148,7 @@ export class LSystem {
         }
 
         if(char !== ']' && !this.turtle.branchEnded) {
-          this.turtle = func.draw(this.turtle, this.turtleStack, this.segments, this.newSegments, option);
+          this.turtle = func.draw(this.turtle, this.turtleStack, this.segments, option);
         }
       }
     }

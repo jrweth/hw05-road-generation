@@ -4,7 +4,7 @@ import {Turtle} from "../turtle";
 import {Segment} from "../lsystem";
 
 export class ScaleLength extends BaseDrawRule implements DrawRule {
-  draw(turtle: Turtle, turtleStack: Turtle[], segments: Segment[], newSegments: Segment[], options?: string) {
+  draw(turtle: Turtle, turtleStack: Turtle[], segments: Segment[], options?: string) {
     let scale: number = turtle.lengthScale;
     if(!isNaN(parseFloat(options))) {
       scale = parseFloat(options);

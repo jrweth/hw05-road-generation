@@ -12,26 +12,28 @@ export class Draw extends BaseDrawRule implements DrawRule {
     this.lsystem = options.lsystem;
   }
 
-  draw(turtle: Turtle, turtleStack: Turtle[], segments: Segment[], newSegments: Segment[]) {
+  draw(turtle: Turtle, turtleStack: Turtle[], segments: Segment[] ) {
 
     //create the standard segment
-    let segment = new Segment();
     let distance: vec2 = vec2.fromValues(
       Math.cos(turtle.dir) * turtle.segmentLength,
       Math.sin(turtle.dir) * turtle.segmentLength
     );
-    segment.startPoint = turtle.pos;
-    segment.endPoint = vec2.create();
-    vec2.add(segment.endPoint, segment.startPoint, distance);
-    segment.roadType = turtle.roadType;
-    segment.rotation = turtle.dir;
+    let endPoint = vec2.create();
+    vec2.add(endPoint, turtle.pos, distance);
 
     //try to add the segment
-    let addSegment = this.lsystem.addSegment(segment);
+    let addSegment = this.lsystem.addSegment(
+      turtle.lastIntersectionId,
+      endPoint,
+      turtle.dir,
+      turtle.roadType
+    );
     //if successful move our turtle
     if(addSegment !== null) {
-      turtle.pos = addSegment.endPoint;
+      turtle.pos = this.lsystem.intersections[addSegment.endIntersectionId].pos;
       turtle.dir = addSegment.rotation;
+      turtle.lastIntersectionId = addSegment.endIntersectionId;
     }
     else {
       turtle.branchEnded = true;

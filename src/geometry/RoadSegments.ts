@@ -1,6 +1,6 @@
 import {gl} from '../globals';
 import InstancedDrawable from "../rendering/gl/InstancedDrawable";
-import {Segment} from "../lsystem/lsystem";
+import {Intersection, Segment} from "../lsystem/lsystem";
 import {RoadType} from "../lsystem/turtle";
 import {vec2} from "gl-matrix";
 
@@ -39,7 +39,7 @@ class RoadSegments extends InstancedDrawable {
 
   }
 
-  setInstanceVBOs(segments: Segment[]) {
+  setInstanceVBOs(segments: Segment[], intersections: Intersection[]) {
     let offsets: number[] = [];
     let colors: number[] = [];
     let width: number;
@@ -47,15 +47,18 @@ class RoadSegments extends InstancedDrawable {
     this.numInstances = segments.length;
 
     for(let i = 0; i < segments.length; i++) {
-      offsets.push(segments[i].startPoint[0], segments[i].startPoint[1], 0);
+      let startPos: vec2 = intersections[segments[i].startIntersectionId].pos;
+      let endPos: vec2 = intersections[segments[i].endIntersectionId].pos;
+      offsets.push(startPos[0], startPos[1], 0);
 
       switch(segments[i].roadType) {
         case RoadType.HIGHWAY: width = 0.01; break
         case RoadType.ROAD:    width = 0.005; break
       }
-      length = vec2.dist(segments[i].startPoint, segments[i].endPoint);
+      length = vec2.dist(startPos, endPos);
       colors.push(length, width, segments[i].rotation, 0);
     }
+    console.log(offsets);
 
     this.offsets = new Float32Array(offsets);
     this.colors = new Float32Array(colors);

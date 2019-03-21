@@ -16,7 +16,7 @@ export class TurnTowardPopulation extends BaseDrawRule implements DrawRule {
     this.terrain = options.terrain;
   }
 
-  draw(turtle: Turtle, turtleStack: Turtle[], segments: Segment[], newSegments: Segment[], options: string) {
+  draw(turtle: Turtle, turtleStack: Turtle[], segments: Segment[], options: string) {
     //default to the current turtle roll angle
     let maxAngle:number = Math.PI / 8;
 
