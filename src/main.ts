@@ -10,14 +10,15 @@ import InstancedShaderProgram from './rendering/gl/InstancedShaderProgram';
 import {LSystem} from "./lsystem/lsystem";
 import Roads from "./lsystem/roads";
 import RoadSegments from "./geometry/RoadSegments";
+import {VecMath} from "./utils/vec-math";
 
 // Define an object with application parameters and button callbacks
 // This will be referred to by dat.GUI's functions that add GUI elements.
 const controls = {
   'Elevation Seed': 10,
   'Road Seed': 5,
-  'Map Type': 3,
-  'Iterations': 10
+  'Map Type': 2,
+  'Iterations': 7
 };
 
 //gui controls
@@ -168,3 +169,4 @@ function main() {
 }
 
 main();
+

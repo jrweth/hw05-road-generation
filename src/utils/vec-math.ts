@@ -76,11 +76,18 @@ export class VecMath {
   }
 
   public static getRotationFromPoints(startPoint: vec2, endPoint: vec2): number {
-    let rot = Math.atan((endPoint[1] - startPoint[1])/(endPoint[0] - startPoint[0]));
-    if(endPoint[1] < startPoint[1]) {
-      rot = - rot;
+    let dX = endPoint[0] - startPoint[0];
+    let dY = endPoint[1] - startPoint[1];
+    if(dX == 0 && dY >= 0) {
+      return Math.PI / 2;
     }
-    return rot;
+    if(dX == 0 && dY < 0) {
+      return Math.PI * 3 / 2;
+    }
+    if(dX < 0) {
+      return Math.PI + Math.atan(dY/dX);
+    }
+    return Math.atan(dY/dX);
   }
 
 }
