@@ -1,4 +1,4 @@
-import {Intersection, LSystem, Segment} from "./lsystem";
+import {Intersection, LSystem} from "./lsystem";
 import {XReplace} from "./x-rule/x-replace";
 import {TurnTowardPopulation} from "./draw-rule/turn-toward-population";
 import {vec2} from "gl-matrix";
@@ -56,6 +56,7 @@ class Roads extends LSystem {
     this.addConstraint(new WaterConstraint({terrain: this.terrain, roads: this}));
     this.addConstraint(new EdgeOfMapConstraint({roads: this}));
 
+    this.turtle.roadType = RoadType.HIGHWAY;
 
   }
 
@@ -85,6 +86,7 @@ class Roads extends LSystem {
   }
 
   addNeighborhoods(): void {
+    console.log(this.segments);
     this.axiom = 'FXFFXFXFFX';
     this.addXRule('X', new XReplace('[-FX][FX][+FX]'));
     this.iterations = 5;

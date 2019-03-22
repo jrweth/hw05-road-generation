@@ -213,9 +213,7 @@ export class LSystem {
           }
         }
 
-        //if(!this.turtle.branchEnded || char == ']') {
           this.turtle = func.draw(this.turtle, this.turtleStack, this.segments, option);
-       // }
 
       }
     }

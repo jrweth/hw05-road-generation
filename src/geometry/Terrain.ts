@@ -21,7 +21,7 @@ class Terrain extends Drawable {
   elevationSeed: number = 1.234;
   populationSeed: number = 2.345;
   populationPoints: vec2[];
-  numPopultationPoints: vec2 = vec2.fromValues(4, 3);
+  numPopultationPoints: vec2 = vec2.fromValues(2, 3);
   aspectRatio: number = 1;
   sectionGrid: TerrainSection[][] = [[]];
   waterLine: number = 0.4;

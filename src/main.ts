@@ -14,12 +14,33 @@ import {VecMath} from "./utils/vec-math";
 
 // Define an object with application parameters and button callbacks
 // This will be referred to by dat.GUI's functions that add GUI elements.
-const controls = {
-  'Elevation Seed': 10,
-  'Road Seed': 5,
+let getUrlParameter = (name: string)  => {
+  name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+  var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+  var results = regex.exec(location.search);
+  return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+};
+
+let controls=  {
+  'Elevation Seed': 1,
+  'Population Seed': 1,
   'Map Type': 3,
   'Iterations': 5
 };
+
+try {
+  let controlsString: string = getUrlParameter('controls');
+  let controlObject = JSON.parse(controlsString);
+  controls['Elevation Seed'] = controlObject['Elevation Seed'];
+  controls['Population Seed'] = controlObject['Population Seed'];
+  controls['Map Type'] = controlObject['Map Type'];
+
+}
+catch(e) {
+
+}
+
+
 
 //gui controls
 const gui = new DAT.GUI();
@@ -71,7 +92,7 @@ function loadScene() {
   roadSegments = new RoadSegments();
   roadSegments.create();
   roadLSystem = new Roads(controls.Iterations, {
-    seed: controls["Road Seed"],
+    seed: controls["Population Seed"],
     terrain: terrain
   });
   roadLSystem.runExpansionIterations();
@@ -100,13 +121,19 @@ function loadAndDrawScene() {
   drawScene();
 }
 
+function reload() {
+  window.location.href =  '/?controls=' + JSON.stringify(controls);
+}
+
 function addControls() {
-  let eSeed = gui.add(controls, 'Elevation Seed', 1, 100).step(1).listen();
-  eSeed.onChange(loadAndDrawScene);
+  let eSeed = gui.add(controls, 'Elevation Seed', {'seed1': 1, 'seed 2': 5.43, 'seed 3': 8.987, 'seed 4': 89.3943}).listen();
+  eSeed.onChange(reload);
+  let pSeed = gui.add(controls, 'Population Seed', {'seed1': 1, 'seed 2': 5.43, 'seed 3': 8.987, 'seed 4': 43.343}).listen();
+  pSeed.onChange(reload);
   let mapType = gui.add(controls, 'Map Type', {'elevation': 1, 'flat': 2, 'population density': 3}).listen();
-  mapType.onChange(loadAndDrawScene);
-  let iter = gui.add(controls, 'Iterations', 1, 100).step(1).listen();
-  iter.onChange(loadAndDrawScene);
+  mapType.onChange(reload);
+  // let iter = gui.add(controls, 'Iterations', 1, 100).step(1).listen();
+  // iter.onChange(loadAndDrawScene);
 }
 
 function initStats() {

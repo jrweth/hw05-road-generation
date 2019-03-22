@@ -21,7 +21,7 @@ export class WaterConstraint implements Constraint {
       }
     }
 
-    if(segment.roadType = RoadType.STREET) {
+    if(segment.roadType == RoadType.STREET) {
       //if(segment.startIntersectionId)
 
     }
