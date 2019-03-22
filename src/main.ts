@@ -24,17 +24,19 @@ let getUrlParameter = (name: string)  => {
 let controls=  {
   'Elevation Seed': 1,
   'Population Seed': 1,
+  'Road Seed': 1,
   'Map Type': 3,
   'Iterations': 5
 };
 
+//hacky hacky hacky
 try {
   let controlsString: string = getUrlParameter('controls');
   let controlObject = JSON.parse(controlsString);
   controls['Elevation Seed'] = controlObject['Elevation Seed'];
   controls['Population Seed'] = controlObject['Population Seed'];
+  controls['Road Seed'] = controlObject['Road Seed'];
   controls['Map Type'] = controlObject['Map Type'];
-
 }
 catch(e) {
 
@@ -87,12 +89,13 @@ function loadScene() {
   //terrain.setDivisions(divisions);
   terrain.setDimensions(dimensions);
   terrain.setElevationSeed(controls["Elevation Seed"]);
+  terrain.setPopulationSeed(controls["Population Seed"]);
   terrain.create();
 
   roadSegments = new RoadSegments();
   roadSegments.create();
   roadLSystem = new Roads(controls.Iterations, {
-    seed: controls["Population Seed"],
+    seed: controls["Road Seed"],
     terrain: terrain
   });
   roadLSystem.runExpansionIterations();
@@ -121,8 +124,17 @@ function loadAndDrawScene() {
   drawScene();
 }
 
+//hacky
 function reload() {
-  window.location.href =  '/?controls=' + JSON.stringify(controls);
+  let url: string = window.location.href;
+  let loc = url.indexOf('?');
+  if(loc == -1) {
+    window.location.href =  url +'?controls=' + JSON.stringify(controls);
+  }
+  else {
+    window.location.href = url.substr(0, loc) +'?controls=' + JSON.stringify(controls);
+
+  }
 }
 
 function addControls() {
@@ -130,6 +142,8 @@ function addControls() {
   eSeed.onChange(reload);
   let pSeed = gui.add(controls, 'Population Seed', {'seed1': 1, 'seed 2': 5.43, 'seed 3': 8.987, 'seed 4': 43.343}).listen();
   pSeed.onChange(reload);
+  let rSeed = gui.add(controls, 'Road Seed', {'seed1': 1, 'seed 2': 5.43, 'seed 3': 8.987, 'seed 4': 43.343}).listen();
+  rSeed.onChange(reload);
   let mapType = gui.add(controls, 'Map Type', {'elevation': 1, 'flat': 2, 'population density': 3}).listen();
   mapType.onChange(reload);
   // let iter = gui.add(controls, 'Iterations', 1, 100).step(1).listen();

@@ -29,7 +29,7 @@ class Roads extends LSystem {
     this.terrain = options.terrain;
     this.initRoadSections();
 
-    this.axiom = 'FL';
+    this.axiom = '[----FL]FL';
     this.addStandardDrawRules();
 
     this.addDrawRule('P', new TurnTowardPopulation({
