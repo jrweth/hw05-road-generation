@@ -133,7 +133,9 @@ export class LSystem {
         if(!adj.added) return adj;
       }
     }
-    let nearestIntersectionId = this.findNearbyIntersectionId(endPos, 0.02);
+
+
+    let nearestIntersectionId = this.findNearbyIntersectionId(endPos, 0.025);
     if(nearestIntersectionId !== null) {
       segment.endIntersectionId = nearestIntersectionId;
       segment.rotation = VecMath.getRotationFromPoints(
