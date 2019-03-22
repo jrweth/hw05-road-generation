@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "dist/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 24);
+/******/ 	return __webpack_require__(__webpack_require__.s = 28);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -68,16 +68,16 @@
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__gl_matrix_common_js__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gl_matrix_mat2_js__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__gl_matrix_mat2d_js__ = __webpack_require__(26);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__gl_matrix_mat3_js__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__gl_matrix_mat4_js__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__gl_matrix_quat_js__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__gl_matrix_quat2_js__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__gl_matrix_vec2_js__ = __webpack_require__(28);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__gl_matrix_vec3_js__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__gl_matrix_vec4_js__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__gl_matrix_common_js__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__gl_matrix_mat2_js__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__gl_matrix_mat2d_js__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__gl_matrix_mat3_js__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__gl_matrix_mat4_js__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__gl_matrix_quat_js__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__gl_matrix_quat2_js__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__gl_matrix_vec2_js__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__gl_matrix_vec3_js__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__gl_matrix_vec4_js__ = __webpack_require__(13);
 /* unused harmony reexport glMatrix */
 /* unused harmony reexport mat2 */
 /* unused harmony reexport mat2d */
@@ -103,6 +103,20 @@
 
 /***/ }),
 /* 1 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+class BaseDrawRule {
+    constructor(options) {
+        this.options = options ? options : {};
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = BaseDrawRule;
+
+
+
+/***/ }),
+/* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -156,7 +170,7 @@ function equals(a, b) {
 }
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -169,21 +183,335 @@ function setGL(_gl) {
 
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-class BaseDrawRule {
-    constructor(options) {
-        this.options = options ? options : {};
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return RoadType; });
+/* harmony export (immutable) */ __webpack_exports__["c"] = cloneTurtle;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_gl_matrix__ = __webpack_require__(0);
+
+var RoadType;
+(function (RoadType) {
+    RoadType[RoadType["HIGHWAY"] = 1] = "HIGHWAY";
+    RoadType[RoadType["STREET"] = 2] = "STREET";
+})(RoadType || (RoadType = {}));
+/**
+ * Struct to hold the parameters for the turtle
+ */
+class Turtle {
+    constructor() {
+        //the direction the turtle is facing represented by angle in radians
+        this.dir = Math.PI / 2;
+        //the position where the turtle exists
+        this.pos = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].fromValues(0.0, 0.0);
+        //the type of road
+        this.roadType = RoadType.HIGHWAY;
+        this.segmentLength = 0.035;
+        this.lengthScale = 0.9;
+        this.angle = Math.PI / 4;
+        this.angleScale = 0.9;
+        this.branchEnded = false;
+        this.lastIntersectionId = 0;
     }
 }
-/* harmony export (immutable) */ __webpack_exports__["a"] = BaseDrawRule;
+/* harmony export (immutable) */ __webpack_exports__["b"] = Turtle;
 
+function cloneTurtle(turtle) {
+    let newTurtle = new Turtle();
+    let pos = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].create();
+    __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].copy(pos, turtle.pos);
+    newTurtle.dir = turtle.dir;
+    newTurtle.pos = pos;
+    newTurtle.roadType = turtle.roadType;
+    newTurtle.segmentLength = turtle.segmentLength;
+    newTurtle.lengthScale = turtle.lengthScale;
+    newTurtle.angle = turtle.angle;
+    newTurtle.angleScale = turtle.angleScale;
+    newTurtle.branchEnded = turtle.branchEnded;
+    newTurtle.lastIntersectionId = turtle.lastIntersectionId;
+    return newTurtle;
+}
 
 
 /***/ }),
-/* 4 */
+/* 5 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+var Prando = /** @class */ (function () {
+    // ================================================================================================================
+    // CONSTRUCTOR ----------------------------------------------------------------------------------------------------
+    /**
+     * Generate a new Prando pseudo-random number generator.
+     *
+     * @param seed - A number or string seed that determines which pseudo-random number sequence will be created. Defaults to current time.
+     */
+    function Prando(seed) {
+        this._value = NaN;
+        if (typeof (seed) === "string") {
+            // String seed
+            this._seed = this.hashCode(seed);
+        }
+        else if (typeof (seed) === "number") {
+            // Numeric seed
+            this._seed = this.getSafeSeed(seed);
+        }
+        else {
+            // Pseudo-random seed
+            this._seed = this.getSafeSeed(Prando.MIN + Math.floor((Prando.MAX - Prando.MIN) * Math.random()));
+        }
+        this.reset();
+    }
+    // ================================================================================================================
+    // PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
+    /**
+     * Generates a pseudo-random number between a lower (inclusive) and a higher (exclusive) bounds.
+     *
+     * @param min - The minimum number that can be randomly generated.
+     * @param pseudoMax - The maximum number that can be randomly generated (exclusive).
+     * @return The generated pseudo-random number.
+     */
+    Prando.prototype.next = function (min, pseudoMax) {
+        if (min === void 0) { min = 0; }
+        if (pseudoMax === void 0) { pseudoMax = 1; }
+        this.recalculate();
+        return this.map(this._value, Prando.MIN, Prando.MAX, min, pseudoMax);
+    };
+    /**
+     * Generates a pseudo-random integer number in a range (inclusive).
+     *
+     * @param min - The minimum number that can be randomly generated.
+     * @param max - The maximum number that can be randomly generated.
+     * @return The generated pseudo-random number.
+     */
+    Prando.prototype.nextInt = function (min, max) {
+        if (min === void 0) { min = 10; }
+        if (max === void 0) { max = 100; }
+        this.recalculate();
+        return Math.floor(this.map(this._value, Prando.MIN, Prando.MAX, min, max + 1));
+    };
+    /**
+     * Generates a pseudo-random string sequence of a particular length from a specific character range.
+     *
+     * Note: keep in mind that creating a random string sequence does not guarantee uniqueness; there is always a
+     * 1 in (char_length^string_length) chance of collision. For real unique string ids, always check for
+     * pre-existing ids, or employ a robust GUID/UUID generator.
+     *
+     * @param length - Length of the strting to be generated.
+     * @param chars - Characters that are used when creating the random string. Defaults to all alphanumeric chars (A-Z, a-z, 0-9).
+     * @return The generated string sequence.
+     */
+    Prando.prototype.nextString = function (length, chars) {
+        if (length === void 0) { length = 16; }
+        if (chars === void 0) { chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"; }
+        var str = "";
+        while (str.length < length) {
+            str += this.nextChar(chars);
+        }
+        return str;
+    };
+    /**
+     * Generates a pseudo-random string of 1 character specific character range.
+     *
+     * @param chars - Characters that are used when creating the random string. Defaults to all alphanumeric chars (A-Z, a-z, 0-9).
+     * @return The generated character.
+     */
+    Prando.prototype.nextChar = function (chars) {
+        if (chars === void 0) { chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"; }
+        this.recalculate();
+        return chars.substr(this.nextInt(0, chars.length - 1), 1);
+    };
+    /**
+     * Picks a pseudo-random item from an array. The array is left unmodified.
+     *
+     * Note: keep in mind that while the returned item will be random enough, picking one item from the array at a time
+     * does not guarantee nor imply that a sequence of random non-repeating items will be picked. If you want to
+     * *pick items in a random order* from an array, instead of *pick one random item from an array*, it's best to
+     * apply a *shuffle* transformation to the array instead, then read it linearly.
+     *
+     * @param array - Array of any type containing one or more candidates for random picking.
+     * @return An item from the array.
+     */
+    Prando.prototype.nextArrayItem = function (array) {
+        this.recalculate();
+        return array[this.nextInt(0, array.length - 1)];
+    };
+    /**
+     * Generates a pseudo-random boolean.
+     *
+     * @return A value of true or false.
+     */
+    Prando.prototype.nextBoolean = function () {
+        this.recalculate();
+        return this._value > 0.5;
+    };
+    /**
+     * Skips ahead in the sequence of numbers that are being generated. This is equivalent to
+     * calling next() a specified number of times, but faster since it doesn't need to map the
+     * new random numbers to a range and return it.
+     *
+     * @param iterations - The number of items to skip ahead.
+     */
+    Prando.prototype.skip = function (iterations) {
+        if (iterations === void 0) { iterations = 1; }
+        while (iterations-- > 0) {
+            this.recalculate();
+        }
+    };
+    /**
+     * Reset the pseudo-random number sequence back to its starting seed. Further calls to next()
+     * will then produce the same sequence of numbers it had produced before. This is equivalent to
+     * creating a new Prando instance with the same seed as another Prando instance.
+     *
+     * Example:
+     * let rng = new Prando(12345678);
+     * console.log(rng.next()); // 0.6177754114889017
+     * console.log(rng.next()); // 0.5784605181725837
+     * rng.reset();
+     * console.log(rng.next()); // 0.6177754114889017 again
+     * console.log(rng.next()); // 0.5784605181725837 again
+     */
+    Prando.prototype.reset = function () {
+        this._value = this._seed;
+    };
+    // ================================================================================================================
+    // PRIVATE INTERFACE ----------------------------------------------------------------------------------------------
+    Prando.prototype.recalculate = function () {
+        this._value = this.xorshift(this._value);
+    };
+    Prando.prototype.xorshift = function (value) {
+        // Xorshift*32
+        // Based on George Marsaglia's work: http://www.jstatsoft.org/v08/i14/paper
+        value ^= value << 13;
+        value ^= value >> 17;
+        value ^= value << 5;
+        return value;
+    };
+    Prando.prototype.map = function (val, minFrom, maxFrom, minTo, maxTo) {
+        return ((val - minFrom) / (maxFrom - minFrom)) * (maxTo - minTo) + minTo;
+    };
+    Prando.prototype.hashCode = function (str) {
+        var hash = 0;
+        if (str) {
+            var l = str.length;
+            for (var i = 0; i < l; i++) {
+                hash = ((hash << 5) - hash) + str.charCodeAt(i);
+                hash |= 0;
+                hash = this.xorshift(hash);
+            }
+        }
+        return this.getSafeSeed(hash);
+    };
+    Prando.prototype.getSafeSeed = function (seed) {
+        if (seed === 0)
+            return 1;
+        return seed;
+    };
+    Prando.MIN = -2147483648; // Int32 min
+    Prando.MAX = 2147483647; // Int32 max
+    return Prando;
+}());
+
+/* harmony default export */ __webpack_exports__["default"] = (Prando);
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_gl_matrix__ = __webpack_require__(0);
+
+//wraps the vec3 functions so that they are easier to deal with
+class VecMath {
+    static ident() {
+        let identity;
+        __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["b" /* mat4 */].identity(identity);
+        return identity;
+    }
+    static degreeToRad(deg) {
+        return deg * 2.0 * this.pi / 360;
+    }
+    static convertToVec3(a) {
+        if (typeof a == 'number') {
+            return __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["d" /* vec3 */].fromValues(a, a, a);
+        }
+        else if (Array.isArray(a) && a.length == 3) {
+            return __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["d" /* vec3 */].fromValues(a[0], a[1], a[2]);
+        }
+        return a;
+    }
+    static convertToVec2(a) {
+        if (typeof a == 'number') {
+            return __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].fromValues(a, a);
+        }
+        else if (Array.isArray(a) && a.length == 2) {
+            return __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].fromValues(a[0], a[1]);
+        }
+        return a;
+    }
+    static add(a, b) {
+        let out = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["d" /* vec3 */].create();
+        return __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["d" /* vec3 */].add(out, this.convertToVec3(a), this.convertToVec3(b));
+    }
+    static multiply3(a, b) {
+        let out = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["d" /* vec3 */].create();
+        return __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["d" /* vec3 */].multiply(out, this.convertToVec3(a), this.convertToVec3(b));
+    }
+    static multiply2(a, b) {
+        let out = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].create();
+        return __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].multiply(out, this.convertToVec2(a), this.convertToVec2(b));
+    }
+    //this assumes that both the line and the point are normalized
+    static rotateAroundVector(point, vector, degree) {
+        let start = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["e" /* vec4 */].fromValues(point[0], point[1], point[2], 1);
+        let result = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["e" /* vec4 */].create();
+        let rot = this.rotationAroundVector(vector, degree);
+        __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["e" /* vec4 */].transformMat4(result, start, rot);
+        return __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["d" /* vec3 */].fromValues(result[0], result[1], result[2]);
+    }
+    /**
+     * Get the rotation matrix for rotation the degrees around a vector
+     * @param vector  the vector to rotate around
+     * @param degree  the degrees to rotate
+     */
+    static rotationAroundVector(vector, degree) {
+        let rot = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["b" /* mat4 */].create();
+        __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["b" /* mat4 */].rotate(rot, this.id, this.degreeToRad(degree), vector);
+        return rot;
+    }
+    static getRotationFromPoints(startPoint, endPoint) {
+        let dX = endPoint[0] - startPoint[0];
+        let dY = endPoint[1] - startPoint[1];
+        if (dX == 0 && dY >= 0) {
+            return Math.PI / 2;
+        }
+        if (dX == 0 && dY < 0) {
+            return Math.PI * 3 / 2;
+        }
+        if (dX < 0) {
+            return Math.PI + Math.atan(dY / dX);
+        }
+        return Math.atan(dY / dX);
+    }
+    static clamp(val, min, max) {
+        if (val < min)
+            return min;
+        if (val > max)
+            return max;
+        return val;
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = VecMath;
+
+VecMath.pi = 3.14159;
+VecMath.id = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["b" /* mat4 */].fromValues(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+
+
+/***/ }),
+/* 7 */
 /***/ (function(module, exports) {
 
 module.exports = invert;
@@ -243,7 +571,7 @@ function invert(out, a) {
 };
 
 /***/ }),
-/* 5 */
+/* 8 */
 /***/ (function(module, exports) {
 
 module.exports = normalize;
@@ -271,55 +599,7 @@ function normalize(out, a) {
 }
 
 /***/ }),
-/* 6 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return RoadType; });
-/* harmony export (immutable) */ __webpack_exports__["c"] = cloneTurtle;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_gl_matrix__ = __webpack_require__(0);
-
-var RoadType;
-(function (RoadType) {
-    RoadType[RoadType["HIGHWAY"] = 1] = "HIGHWAY";
-    RoadType[RoadType["ROAD"] = 2] = "ROAD";
-})(RoadType || (RoadType = {}));
-/**
- * Struct to hold the parameters for the turtle
- */
-class Turtle {
-    constructor() {
-        //the direction the turtle is facing represented by angle in radians
-        this.dir = Math.PI / 2;
-        //the position where the turtle exists
-        this.pos = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].fromValues(0.0, 0.0);
-        //the type of road
-        this.roadType = RoadType.HIGHWAY;
-        this.segmentLength = 0.05;
-        this.lengthScale = 0.9;
-        this.angle = 90;
-        this.angleScale = 0.9;
-    }
-}
-/* harmony export (immutable) */ __webpack_exports__["b"] = Turtle;
-
-function cloneTurtle(turtle) {
-    let newTurtle = new Turtle();
-    let pos = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].create();
-    __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].copy(pos, turtle.pos);
-    newTurtle.dir = turtle.dir;
-    newTurtle.pos = pos;
-    newTurtle.roadType = turtle.roadType;
-    newTurtle.segmentLength = turtle.segmentLength;
-    newTurtle.lengthScale = turtle.lengthScale;
-    newTurtle.angle = turtle.angle;
-    newTurtle.angleScale = turtle.angleScale;
-    return newTurtle;
-}
-
-
-/***/ }),
-/* 7 */
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -356,7 +636,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["equals"] = equals;
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mul", function() { return mul; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sub", function() { return sub; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_js__ = __webpack_require__(2);
 
 
 /**
@@ -1169,7 +1449,7 @@ var mul = multiply;
 var sub = subtract;
 
 /***/ }),
-/* 8 */
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1221,7 +1501,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["equals"] = equals;
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mul", function() { return mul; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sub", function() { return sub; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_js__ = __webpack_require__(2);
 
 
 /**
@@ -3065,7 +3345,7 @@ var mul = multiply;
 var sub = subtract;
 
 /***/ }),
-/* 9 */
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3104,10 +3384,10 @@ var sub = subtract;
 /* unused harmony export rotationTo */
 /* unused harmony export sqlerp */
 /* unused harmony export setAxes */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_js__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__mat3_js__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vec3_js__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__vec4_js__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_js__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__mat3_js__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vec3_js__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__vec4_js__ = __webpack_require__(13);
 
 
 
@@ -3771,7 +4051,7 @@ var setAxes = function () {
 }();
 
 /***/ }),
-/* 10 */
+/* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3823,7 +4103,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "len", function() { return len; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sqrLen", function() { return sqrLen; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "forEach", function() { return forEach; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_js__ = __webpack_require__(2);
 
 
 /**
@@ -4613,7 +4893,7 @@ var forEach = function () {
 }();
 
 /***/ }),
-/* 11 */
+/* 13 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4657,7 +4937,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "len", function() { return len; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sqrLen", function() { return sqrLen; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "forEach", function() { return forEach; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_js__ = __webpack_require__(2);
 
 
 /**
@@ -5274,79 +5554,65 @@ var forEach = function () {
 }();
 
 /***/ }),
-/* 12 */
+/* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_gl_matrix__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_vec_math__ = __webpack_require__(6);
 
-//wraps the vec3 functions so that they are easier to deal with
-class VecMath {
-    static ident() {
-        let identity;
-        __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["b" /* mat4 */].identity(identity);
-        return identity;
+
+/**
+ * Various random functions to help generate noise
+ */
+class Random {
+    //get a pseudo random number based upon 2 values
+    static random2to1(p, seed) {
+        return Math.abs((Math.sin(__WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].dot(__WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].add(p, p, seed), __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].fromValues(127.1, 311.7))) * 43758.5453) % 1);
     }
-    static degreeToRad(deg) {
-        return deg * 2.0 * this.pi / 360;
+    //get a pseudo random number based upon 1 value
+    static random1to1(p, seed) {
+        return Math.abs((Math.sin(__WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].dot(__WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].fromValues(p, 311.2), seed)) * 43758.5453) % 1);
     }
-    static convertToVec3(a) {
-        if (typeof a == 'number') {
-            return __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["d" /* vec3 */].fromValues(a, a, a);
+    //mix two number toget
+    static mix(a, b, ratio) {
+        return a + ((b - a) * (ratio));
+    }
+    static interpNoiseRandom2to1(p, seed) {
+        let fractX = p[0] % 1;
+        let x1 = Math.floor(p[0]);
+        let x2 = x1 + 1.0;
+        let fractY = p[1] % 1;
+        let y1 = Math.floor(p[1]);
+        let y2 = y1 + 1.0;
+        let v1 = this.random2to1(__WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].fromValues(x1, y1), seed);
+        let v2 = this.random2to1(__WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].fromValues(x2, y1), seed);
+        let v3 = this.random2to1(__WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].fromValues(x1, y2), seed);
+        let v4 = this.random2to1(__WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].fromValues(x2, y2), seed);
+        let i1 = this.mix(v1, v2, fractX);
+        let i2 = this.mix(v3, v4, fractX);
+        return this.mix(i1, i2, fractY);
+    }
+    static interp2D(fracX, fracY, x1y1, x2y1, x1y2, x2y2) {
+        let i1 = this.mix(x1y1, x2y1, fracX);
+        let i2 = this.mix(x1y2, x2y2, fracX);
+        return this.mix(i1, i2, fracY);
+    }
+    static fbm2to1(p, seed, persistence = 0.5, octaves = 8.0) {
+        let total = 0.0;
+        for (let i = 0.0; i < octaves; i++) {
+            let freq = Math.pow(2.0, i);
+            let amp = Math.pow(persistence, i + 1.0);
+            total = total + this.interpNoiseRandom2to1(__WEBPACK_IMPORTED_MODULE_1__utils_vec_math__["a" /* VecMath */].multiply2(p, freq), seed) * amp;
         }
-        else if (Array.isArray(a) && a.length == 3) {
-            return __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["d" /* vec3 */].fromValues(a[0], a[1], a[2]);
-        }
-        return a;
-    }
-    static convertToVec2(a) {
-        if (typeof a == 'number') {
-            return __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].fromValues(a, a);
-        }
-        else if (Array.isArray(a) && a.length == 2) {
-            return __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].fromValues(a[0], a[1]);
-        }
-        return a;
-    }
-    static add(a, b) {
-        let out = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["d" /* vec3 */].create();
-        return __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["d" /* vec3 */].add(out, this.convertToVec3(a), this.convertToVec3(b));
-    }
-    static multiply3(a, b) {
-        let out = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["d" /* vec3 */].create();
-        return __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["d" /* vec3 */].multiply(out, this.convertToVec3(a), this.convertToVec3(b));
-    }
-    static multiply2(a, b) {
-        let out = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].create();
-        return __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].multiply(out, this.convertToVec2(a), this.convertToVec2(b));
-    }
-    //this assumes that both the line and the point are normalized
-    static rotateAroundVector(point, vector, degree) {
-        let start = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["e" /* vec4 */].fromValues(point[0], point[1], point[2], 1);
-        let result = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["e" /* vec4 */].create();
-        let rot = this.rotationAroundVector(vector, degree);
-        __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["e" /* vec4 */].transformMat4(result, start, rot);
-        return __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["d" /* vec3 */].fromValues(result[0], result[1], result[2]);
-    }
-    /**
-     * Get the rotation matrix for rotation the degrees around a vector
-     * @param vector  the vector to rotate around
-     * @param degree  the degrees to rotate
-     */
-    static rotationAroundVector(vector, degree) {
-        let rot = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["b" /* mat4 */].create();
-        __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["b" /* mat4 */].rotate(rot, this.id, this.degreeToRad(degree), vector);
-        return rot;
+        return total;
     }
 }
-/* harmony export (immutable) */ __webpack_exports__["a"] = VecMath;
-
-VecMath.pi = 3.14159;
-VecMath.id = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["b" /* mat4 */].fromValues(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+/* harmony default export */ __webpack_exports__["a"] = (Random);
 
 
 /***/ }),
-/* 13 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5354,8 +5620,8 @@ VecMath.id = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["b" /* mat4 */].fromValues(
 
 module.exports = createFilteredVector
 
-var cubicHermite = __webpack_require__(44)
-var bsearch = __webpack_require__(14)
+var cubicHermite = __webpack_require__(47)
+var bsearch = __webpack_require__(16)
 
 function clamp(lo, hi, x) {
   return Math.min(hi, Math.max(lo, x))
@@ -5644,7 +5910,7 @@ function createFilteredVector(initState, initVelocity, initTime) {
 
 
 /***/ }),
-/* 14 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5711,7 +5977,7 @@ module.exports = {
 
 
 /***/ }),
-/* 15 */
+/* 17 */
 /***/ (function(module, exports) {
 
 module.exports = cross;
@@ -5735,7 +6001,7 @@ function cross(out, a, b) {
 }
 
 /***/ }),
-/* 16 */
+/* 18 */
 /***/ (function(module, exports) {
 
 module.exports = dot;
@@ -5752,10 +6018,10 @@ function dot(a, b) {
 }
 
 /***/ }),
-/* 17 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var identity = __webpack_require__(18);
+var identity = __webpack_require__(20);
 
 module.exports = lookAt;
 
@@ -5847,7 +6113,7 @@ function lookAt(out, eye, center, up) {
 };
 
 /***/ }),
-/* 18 */
+/* 20 */
 /***/ (function(module, exports) {
 
 module.exports = identity;
@@ -5879,7 +6145,7 @@ function identity(out) {
 };
 
 /***/ }),
-/* 19 */
+/* 21 */
 /***/ (function(module, exports) {
 
 module.exports = translate;
@@ -5922,7 +6188,7 @@ function translate(out, a, v) {
 };
 
 /***/ }),
-/* 20 */
+/* 22 */
 /***/ (function(module, exports) {
 
 module.exports = create;
@@ -5954,7 +6220,7 @@ function create() {
 };
 
 /***/ }),
-/* 21 */
+/* 23 */
 /***/ (function(module, exports) {
 
 module.exports = scale;
@@ -5990,7 +6256,7 @@ function scale(out, a, v) {
 };
 
 /***/ }),
-/* 22 */
+/* 24 */
 /***/ (function(module, exports) {
 
 module.exports = determinant;
@@ -6025,157 +6291,149 @@ function determinant(a) {
 };
 
 /***/ }),
-/* 23 */
+/* 25 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* unused harmony export SegmentStatus */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__turtle__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__draw_rule_turn_right__ = __webpack_require__(76);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__draw_rule_turn_left__ = __webpack_require__(77);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__draw_rule_random_angle__ = __webpack_require__(78);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__draw_rule_scale_length__ = __webpack_require__(80);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__draw_rule_scale_angle__ = __webpack_require__(81);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__draw_rule_start_branch__ = __webpack_require__(82);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__draw_rule_end_branch__ = __webpack_require__(83);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__draw_rule_draw__ = __webpack_require__(84);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_gl_matrix__ = __webpack_require__(0);
 
 
-
-
-
-
-
-
-
-var SegmentStatus;
-(function (SegmentStatus) {
-    SegmentStatus["OPEN"] = "open";
-    SegmentStatus["CLOSED"] = "closed";
-})(SegmentStatus || (SegmentStatus = {}));
-class Segment {
-}
-/* harmony export (immutable) */ __webpack_exports__["b"] = Segment;
-
-class Intersection {
-}
-/* unused harmony export Intersection */
-
-class LSystem {
-    //initialize with the options
-    constructor(iterations, options) {
-        //the segments already created
-        this.segments = [];
-        //the new propsed segments
-        this.newSegments = [];
-        //the set of expansion rules
-        this.xRules = new Map();
-        //the set of drawing rules
-        this.drawRules = new Map();
-        //the current state of the turtle
-        this.turtle = new __WEBPACK_IMPORTED_MODULE_0__turtle__["b" /* Turtle */]();
-        //the turtle stack
-        this.turtleStack = [];
-        this.iterations = iterations;
-        this.options = options;
-        this.curIteration = 0;
+let Prando = __webpack_require__(5).default;
+class TurnTowardPopulation extends __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__["a" /* BaseDrawRule */] {
+    constructor(options) {
+        super(options);
+        this.prando = new Prando(options.seed);
+        this.terrain = options.terrain;
     }
-    //add an expansion rule
-    addXRule(char, rule) {
-        this.xRules.set(char, rule);
-    }
-    addDrawRule(char, rule) {
-        this.drawRules.set(char, rule);
-    }
-    //do one iteration over the string
-    iterate(iterations) {
-        let nextString = '';
-        let params = { iterations: iterations };
-        for (let charIndex = 0; charIndex < this.curString.length; charIndex++) {
-            let char = this.curString.charAt(charIndex);
-            let func = this.xRules.get(char);
-            //if rule is found then use
-            if (func) {
-                //special case for handling drawing
-                nextString += func.apply(char, params);
-            }
-            //if no rule found then just retain the same character
-            else {
-                nextString += char;
+    draw(turtle, turtleStack, segments, options) {
+        //default to the current turtle roll angle
+        let maxAngle = Math.PI / 50;
+        let bestDir = turtle.dir;
+        let highestSum = this.checkPopulationAtDirection(turtle, turtle.dir);
+        //get five random angles to check
+        for (let i = 0; i < 5; i++) {
+            let newDir = turtle.dir + this.prando.next(0, maxAngle * 2) - maxAngle;
+            let sum = this.checkPopulationAtDirection(turtle, newDir);
+            if (sum > highestSum) {
+                bestDir = newDir;
+                highestSum = sum;
             }
         }
-        this.curIteration++;
-    }
-    runExpansionIterations() {
-        this.curString = this.axiom;
-        for (let i = 0; i < this.iterations; i++) {
-            this.iterate(i);
-        }
-        console.log(this.curString);
-    }
-    addSegment(segment) {
-        this.segments.push(segment);
-        return segment;
-    }
-    runDrawRules() {
-        //do the initial scaling
-        for (let charIndex = 0; charIndex < this.curString.length; charIndex++) {
-            let char = this.curString.charAt(charIndex);
-            let func = this.drawRules.get(char);
-            //if rule is found then use
-            if (func) {
-                //check to see if we have an option string for our draw rule
-                let option = '';
-                //options for the symbol are encloesed in () -- if they exist get the option
-                if (this.curString.charAt(charIndex + 1) == '(') {
-                    charIndex += 2;
-                    while (this.curString.charAt(charIndex) !== ')') {
-                        option += this.curString.charAt(charIndex);
-                        charIndex++;
-                    }
-                }
-                this.turtle = func.draw(this.turtle, this.turtleStack, this.segments, this.newSegments, option);
-            }
-        }
-        console.log(this.segments);
+        turtle.dir = bestDir;
+        return turtle;
     }
     /**
-     * Add the standard rules based off Houdini codes
+     * Sum the population density from the turtle along points along a ray
+     * @param turtle
+     * @param angle
      */
-    addStandardDrawRules() {
-        this.addDrawRule('F', new __WEBPACK_IMPORTED_MODULE_8__draw_rule_draw__["a" /* Draw */]({ lsystem: this }));
-        this.addDrawRule('+', new __WEBPACK_IMPORTED_MODULE_1__draw_rule_turn_right__["a" /* TurnRight */]());
-        this.addDrawRule('-', new __WEBPACK_IMPORTED_MODULE_2__draw_rule_turn_left__["a" /* TurnLeft */]());
-        this.addDrawRule('[', new __WEBPACK_IMPORTED_MODULE_6__draw_rule_start_branch__["a" /* StartBranch */]());
-        this.addDrawRule(']', new __WEBPACK_IMPORTED_MODULE_7__draw_rule_end_branch__["a" /* EndBranch */]());
-        this.addDrawRule('~', new __WEBPACK_IMPORTED_MODULE_3__draw_rule_random_angle__["a" /* RandomAngle */]({ seed: 1 }));
-        this.addDrawRule('"', new __WEBPACK_IMPORTED_MODULE_4__draw_rule_scale_length__["a" /* ScaleLength */]());
-        this.addDrawRule(";", new __WEBPACK_IMPORTED_MODULE_5__draw_rule_scale_angle__["a" /* ScaleAngle */]());
+    checkPopulationAtDirection(turtle, newDir) {
+        let dist = 0.04;
+        let sum = 0;
+        for (let i = 1; i < 6; i++) {
+            let checkPoint = __WEBPACK_IMPORTED_MODULE_1_gl_matrix__["c" /* vec2 */].create();
+            checkPoint[0] = turtle.pos[0] + Math.cos(newDir) * dist;
+            checkPoint[1] = turtle.pos[1] + Math.sin(newDir) * dist;
+            if (this.terrain.positionOnLand(turtle.pos)
+                && Math.abs(checkPoint[0]) < 1
+                && Math.abs(checkPoint[0]) < 1) {
+                sum += this.terrain.getPopulationDensity(checkPoint) / i;
+            }
+        }
+        return sum;
     }
 }
-/* harmony export (immutable) */ __webpack_exports__["a"] = LSystem;
+/* harmony export (immutable) */ __webpack_exports__["a"] = TurnTowardPopulation;
 
 
 
 /***/ }),
-/* 24 */
+/* 26 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_gl_matrix__ = __webpack_require__(0);
+
+
+let Prando = __webpack_require__(5).default;
+class TurnAwayPopulation extends __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__["a" /* BaseDrawRule */] {
+    constructor(options) {
+        super(options);
+        this.prando = new Prando(options.seed);
+        this.terrain = options.terrain;
+    }
+    draw(turtle, turtleStack, segments, options) {
+        //default to the current turtle roll angle
+        let maxAngle = Math.PI / 12;
+        let bestDir = turtle.dir;
+        let lowestSum = this.checkPopulationAtDirection(turtle, turtle.dir);
+        //get five random angles to check
+        for (let i = 0; i < 5; i++) {
+            let newDir = turtle.dir + this.prando.next(0, maxAngle) - maxAngle;
+            let sum = this.checkPopulationAtDirection(turtle, newDir);
+            if (sum < lowestSum) {
+                bestDir = newDir;
+                lowestSum = sum;
+            }
+        }
+        turtle.dir = bestDir;
+        return turtle;
+    }
+    /**
+     * Sum the population density from the turtle along points along a ray
+     * @param turtle
+     * @param angle
+     */
+    checkPopulationAtDirection(turtle, newDir) {
+        let dist = 2 / (5 * this.terrain.numPopultationPoints[0]);
+        let sum = 0;
+        for (let i = 1; i < 6; i++) {
+            let checkPoint = __WEBPACK_IMPORTED_MODULE_1_gl_matrix__["c" /* vec2 */].create();
+            checkPoint[0] = turtle.pos[0] + Math.cos(newDir) * dist;
+            checkPoint[1] = turtle.pos[1] + Math.sin(newDir) * dist;
+            if (Math.abs(checkPoint[0]) < 1 && Math.abs(checkPoint[0]) < 1) {
+                sum += this.terrain.getPopulationDensity(checkPoint) / i;
+            }
+        }
+        return sum;
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = TurnAwayPopulation;
+
+
+
+/***/ }),
+/* 27 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+class ConstraintAdjustment {
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = ConstraintAdjustment;
+
+
+
+/***/ }),
+/* 28 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_gl_matrix__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_stats_js__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_stats_js__ = __webpack_require__(33);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_stats_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_stats_js__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_dat_gui__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_dat_gui__ = __webpack_require__(34);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_dat_gui___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_dat_gui__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__geometry_Terrain__ = __webpack_require__(33);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__rendering_gl_OpenGLRenderer__ = __webpack_require__(37);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__Camera__ = __webpack_require__(38);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__globals__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__rendering_gl_ShaderProgram__ = __webpack_require__(73);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__rendering_gl_InstancedShaderProgram__ = __webpack_require__(74);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__lsystem_roads__ = __webpack_require__(75);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__geometry_RoadSegments__ = __webpack_require__(85);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__geometry_Terrain__ = __webpack_require__(37);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__rendering_gl_OpenGLRenderer__ = __webpack_require__(40);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__Camera__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__globals__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__rendering_gl_ShaderProgram__ = __webpack_require__(76);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__rendering_gl_InstancedShaderProgram__ = __webpack_require__(77);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__lsystem_roads__ = __webpack_require__(78);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__geometry_RoadSegments__ = __webpack_require__(92);
 
 
 
@@ -6189,11 +6447,27 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 // Define an object with application parameters and button callbacks
 // This will be referred to by dat.GUI's functions that add GUI elements.
-const controls = {
-    'Elevation Seed': 10,
-    'Map Type': 1,
-    'Iterations': 10
+let getUrlParameter = (name) => {
+    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+    var results = regex.exec(location.search);
+    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 };
+let controls = {
+    'Elevation Seed': 1,
+    'Population Seed': 1,
+    'Map Type': 3,
+    'Iterations': 5
+};
+try {
+    let controlsString = getUrlParameter('controls');
+    let controlObject = JSON.parse(controlsString);
+    controls['Elevation Seed'] = controlObject['Elevation Seed'];
+    controls['Population Seed'] = controlObject['Population Seed'];
+    controls['Map Type'] = controlObject['Map Type'];
+}
+catch (e) {
+}
 //gui controls
 const gui = new __WEBPACK_IMPORTED_MODULE_2_dat_gui__["GUI"]();
 //stats for rendering
@@ -6223,15 +6497,19 @@ function loadScene() {
     let dimensions = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].fromValues(window.innerWidth, window.innerHeight);
     terrain = new __WEBPACK_IMPORTED_MODULE_3__geometry_Terrain__["a" /* default */]();
     //terrain.setDivisions(divisions);
-    //terrain.setDimensions(dimensions);
+    terrain.setDimensions(dimensions);
     terrain.setElevationSeed(controls["Elevation Seed"]);
     terrain.create();
     roadSegments = new __WEBPACK_IMPORTED_MODULE_10__geometry_RoadSegments__["a" /* default */]();
     roadSegments.create();
-    roadLSystem = new __WEBPACK_IMPORTED_MODULE_9__lsystem_roads__["a" /* default */](controls.Iterations, {});
+    roadLSystem = new __WEBPACK_IMPORTED_MODULE_9__lsystem_roads__["a" /* default */](controls.Iterations, {
+        seed: controls["Population Seed"],
+        terrain: terrain
+    });
     roadLSystem.runExpansionIterations();
     roadLSystem.runDrawRules();
-    roadSegments.setInstanceVBOs(roadLSystem.segments);
+    roadLSystem.addNeighborhoods();
+    roadSegments.setInstanceVBOs(roadLSystem.segments, roadLSystem.intersections);
 }
 function drawScene() {
     camera.update();
@@ -6250,11 +6528,18 @@ function loadAndDrawScene() {
     loadScene();
     drawScene();
 }
+function reload() {
+    window.location.href = '/?controls=' + JSON.stringify(controls);
+}
 function addControls() {
-    let eSeed = gui.add(controls, 'Elevation Seed', 1, 100).step(1).listen();
-    eSeed.onChange(loadAndDrawScene);
+    let eSeed = gui.add(controls, 'Elevation Seed', { 'seed1': 1, 'seed 2': 5.43, 'seed 3': 8.987, 'seed 4': 89.3943 }).listen();
+    eSeed.onChange(reload);
+    let pSeed = gui.add(controls, 'Population Seed', { 'seed1': 1, 'seed 2': 5.43, 'seed 3': 8.987, 'seed 4': 43.343 }).listen();
+    pSeed.onChange(reload);
     let mapType = gui.add(controls, 'Map Type', { 'elevation': 1, 'flat': 2, 'population density': 3 }).listen();
-    mapType.onChange(loadAndDrawScene);
+    mapType.onChange(reload);
+    // let iter = gui.add(controls, 'Iterations', 1, 100).step(1).listen();
+    // iter.onChange(loadAndDrawScene);
 }
 function initStats() {
     stats.setMode(0);
@@ -6277,12 +6562,12 @@ function main() {
     renderer.setClearColor(0.2, 0.2, 0.2, 1);
     gl.enable(gl.DEPTH_TEST);
     terrainShader = new __WEBPACK_IMPORTED_MODULE_7__rendering_gl_ShaderProgram__["b" /* default */]([
-        new __WEBPACK_IMPORTED_MODULE_7__rendering_gl_ShaderProgram__["a" /* Shader */](gl.VERTEX_SHADER, __webpack_require__(87)),
-        new __WEBPACK_IMPORTED_MODULE_7__rendering_gl_ShaderProgram__["a" /* Shader */](gl.FRAGMENT_SHADER, __webpack_require__(88)),
+        new __WEBPACK_IMPORTED_MODULE_7__rendering_gl_ShaderProgram__["a" /* Shader */](gl.VERTEX_SHADER, __webpack_require__(94)),
+        new __WEBPACK_IMPORTED_MODULE_7__rendering_gl_ShaderProgram__["a" /* Shader */](gl.FRAGMENT_SHADER, __webpack_require__(95)),
     ]);
     roadShader = new __WEBPACK_IMPORTED_MODULE_8__rendering_gl_InstancedShaderProgram__["a" /* default */]([
-        new __WEBPACK_IMPORTED_MODULE_7__rendering_gl_ShaderProgram__["a" /* Shader */](gl.VERTEX_SHADER, __webpack_require__(89)),
-        new __WEBPACK_IMPORTED_MODULE_7__rendering_gl_ShaderProgram__["a" /* Shader */](gl.FRAGMENT_SHADER, __webpack_require__(90)),
+        new __WEBPACK_IMPORTED_MODULE_7__rendering_gl_ShaderProgram__["a" /* Shader */](gl.VERTEX_SHADER, __webpack_require__(96)),
+        new __WEBPACK_IMPORTED_MODULE_7__rendering_gl_ShaderProgram__["a" /* Shader */](gl.FRAGMENT_SHADER, __webpack_require__(97)),
     ]);
     renderer.setSize(window.innerWidth, window.innerHeight);
     camera.setAspectRatio(window.innerWidth / window.innerHeight);
@@ -6304,7 +6589,7 @@ main();
 
 
 /***/ }),
-/* 25 */
+/* 29 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6334,7 +6619,7 @@ main();
 /* unused harmony export multiplyScalarAndAdd */
 /* unused harmony export mul */
 /* unused harmony export sub */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_js__ = __webpack_require__(2);
 
 
 /**
@@ -6771,7 +7056,7 @@ var mul = multiply;
 var sub = subtract;
 
 /***/ }),
-/* 26 */
+/* 30 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6800,7 +7085,7 @@ var sub = subtract;
 /* unused harmony export equals */
 /* unused harmony export mul */
 /* unused harmony export sub */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_js__ = __webpack_require__(2);
 
 
 /**
@@ -7287,7 +7572,7 @@ var mul = multiply;
 var sub = subtract;
 
 /***/ }),
-/* 27 */
+/* 31 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7330,9 +7615,9 @@ var sub = subtract;
 /* unused harmony export str */
 /* unused harmony export exactEquals */
 /* unused harmony export equals */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_js__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__quat_js__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__mat4_js__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_js__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__quat_js__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__mat4_js__ = __webpack_require__(10);
 
 
 
@@ -8179,7 +8464,7 @@ function equals(a, b) {
 }
 
 /***/ }),
-/* 28 */
+/* 32 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -8228,7 +8513,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sqrDist", function() { return sqrDist; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sqrLen", function() { return sqrLen; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "forEach", function() { return forEach; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__common_js__ = __webpack_require__(2);
 
 
 /**
@@ -8856,21 +9141,21 @@ var forEach = function () {
 }();
 
 /***/ }),
-/* 29 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 !function(e,t){ true?module.exports=t():"function"==typeof define&&define.amd?define(t):e.Stats=t()}(this,function(){"use strict";var c=function(){var n=0,l=document.createElement("div");function e(e){return l.appendChild(e.dom),e}function t(e){for(var t=0;t<l.children.length;t++)l.children[t].style.display=t===e?"block":"none";n=e}l.style.cssText="position:fixed;top:0;left:0;cursor:pointer;opacity:0.9;z-index:10000",l.addEventListener("click",function(e){e.preventDefault(),t(++n%l.children.length)},!1);var i=(performance||Date).now(),a=i,o=0,f=e(new c.Panel("FPS","#0ff","#002")),r=e(new c.Panel("MS","#0f0","#020"));if(self.performance&&self.performance.memory)var d=e(new c.Panel("MB","#f08","#201"));return t(0),{REVISION:16,dom:l,addPanel:e,showPanel:t,begin:function(){i=(performance||Date).now()},end:function(){o++;var e=(performance||Date).now();if(r.update(e-i,200),a+1e3<=e&&(f.update(1e3*o/(e-a),100),a=e,o=0,d)){var t=performance.memory;d.update(t.usedJSHeapSize/1048576,t.jsHeapSizeLimit/1048576)}return e},update:function(){i=this.end()},domElement:l,setMode:t}};return c.Panel=function(n,l,i){var a=1/0,o=0,f=Math.round,r=f(window.devicePixelRatio||1),d=80*r,e=48*r,c=3*r,p=2*r,u=3*r,s=15*r,m=74*r,h=30*r,y=document.createElement("canvas");y.width=d,y.height=e,y.style.cssText="width:80px;height:48px";var v=y.getContext("2d");return v.font="bold "+9*r+"px Helvetica,Arial,sans-serif",v.textBaseline="top",v.fillStyle=i,v.fillRect(0,0,d,e),v.fillStyle=l,v.fillText(n,c,p),v.fillRect(u,s,m,h),v.fillStyle=i,v.globalAlpha=.9,v.fillRect(u,s,m,h),{dom:y,update:function(e,t){a=Math.min(a,e),o=Math.max(o,e),v.fillStyle=i,v.globalAlpha=1,v.fillRect(0,0,d,s),v.fillStyle=l,v.fillText(f(e)+" "+n+" ("+f(a)+"-"+f(o)+")",c,p),v.drawImage(y,u+r,s,m-r,h,u,s,m-r,h),v.fillRect(u+m-r,s,r,h),v.fillStyle=i,v.globalAlpha=.9,v.fillRect(u+m-r,s,r,f((1-e/t)*h))}}},c});
 
 
 /***/ }),
-/* 30 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(31)
-module.exports.color = __webpack_require__(32)
+module.exports = __webpack_require__(35)
+module.exports.color = __webpack_require__(36)
 
 /***/ }),
-/* 31 */
+/* 35 */
 /***/ (function(module, exports) {
 
 /**
@@ -12535,7 +12820,7 @@ dat.dom.dom,
 dat.utils.common);
 
 /***/ }),
-/* 32 */
+/* 36 */
 /***/ (function(module, exports) {
 
 /**
@@ -13295,17 +13580,25 @@ dat.color.toString,
 dat.utils.common);
 
 /***/ }),
-/* 33 */
+/* 37 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_gl_matrix__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__rendering_gl_Drawable__ = __webpack_require__(34);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__globals__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__noise_noise__ = __webpack_require__(35);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__rendering_gl_Drawable__ = __webpack_require__(38);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__globals__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__noise_noise__ = __webpack_require__(39);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__utils_vec_math__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__noise_random__ = __webpack_require__(14);
 
 
 
+
+
+
+class TerrainSection {
+}
+/* unused harmony export TerrainSection */
 
 class Terrain extends __WEBPACK_IMPORTED_MODULE_1__rendering_gl_Drawable__["a" /* default */] {
     constructor() {
@@ -13313,8 +13606,10 @@ class Terrain extends __WEBPACK_IMPORTED_MODULE_1__rendering_gl_Drawable__["a" /
         this.divisions = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].fromValues(100, 100);
         this.elevationSeed = 1.234;
         this.populationSeed = 2.345;
-        this.numPopultationPoints = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].fromValues(5, 4);
+        this.numPopultationPoints = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].fromValues(2, 3);
         this.aspectRatio = 1;
+        this.sectionGrid = [[]];
+        this.waterLine = 0.4;
         this.divisions = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].fromValues(100, 100);
     }
     setElevationSeed(seed) {
@@ -13336,13 +13631,113 @@ class Terrain extends __WEBPACK_IMPORTED_MODULE_1__rendering_gl_Drawable__["a" /
         let worleyPos = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].fromValues(worleyX, worleyY);
         return worleyPos;
     }
+    screenPosToGridPos(screenPos) {
+        let gridX = ((1 + screenPos[0]) / 2.0) * this.divisions[0];
+        let gridY = ((1 + screenPos[1]) / 2.0) * this.divisions[1];
+        let gridPos = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].fromValues(gridX, gridY);
+        return gridPos;
+    }
+    /**
+     * Get the grid index for the screen position
+     * @param screenPos
+     */
+    screenPosToGridIndex(screenPos) {
+        let gridPos = this.screenPosToGridPos(screenPos);
+        gridPos[0] = __WEBPACK_IMPORTED_MODULE_4__utils_vec_math__["a" /* VecMath */].clamp(Math.floor(gridPos[0]), 0, this.divisions[0] - 1);
+        gridPos[1] = __WEBPACK_IMPORTED_MODULE_4__utils_vec_math__["a" /* VecMath */].clamp(Math.floor(gridPos[1]), 0, this.divisions[1] - 1);
+        return gridPos;
+    }
+    //get the terrain section from the grid position
+    screenPosToTerrainSection(screenPos) {
+        let gridPos = this.screenPosToGridPos(screenPos);
+        let gridX = Math.floor(gridPos[0]);
+        let gridY = Math.floor(gridPos[1]);
+        return this.sectionGrid[gridX][gridY];
+    }
     worleyPosToScreenPos(worleyPos) {
         return worleyPos;
     }
     getPopulationDensity(screenPos) {
         let worleyPos = this.screenPosToWorlyPos(screenPos);
         let closestPopPoint = __WEBPACK_IMPORTED_MODULE_3__noise_noise__["a" /* default */].getClosestWorleyPoint2d(worleyPos, this.numPopultationPoints, this.populationPoints);
-        return Math.pow(__WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].dist(worleyPos, closestPopPoint) / 1.414, 1);
+        if (closestPopPoint) {
+            return Math.pow((1 - __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].dist(worleyPos, closestPopPoint)) / 1.414, 3);
+        }
+        return 0;
+    }
+    //get the elevation at a particular point
+    getElevation(screenPos) {
+        let gridIndex = this.screenPosToGridIndex(screenPos);
+        let gridPos = this.screenPosToGridPos(screenPos);
+        let e1 = this.sectionGrid[gridIndex[0]][gridIndex[1]].cornerElevation;
+        let e2 = this.sectionGrid[gridIndex[0] + 1][gridIndex[1]].cornerElevation;
+        let e3 = this.sectionGrid[gridIndex[0]][gridIndex[1] + 1].cornerElevation;
+        let e4 = this.sectionGrid[gridIndex[0] + 1][gridIndex[1] + 1].cornerElevation;
+        console;
+        let elevation = __WEBPACK_IMPORTED_MODULE_5__noise_random__["a" /* default */].interp2D(gridPos[0] % 1, gridPos[1] % 1, e1, e2, e3, e4);
+        return elevation;
+    }
+    positionOnLand(screenPos) {
+        let gridIndex = this.screenPosToGridIndex(screenPos);
+        if (this.sectionGrid[gridIndex[0]][gridIndex[1]].minElevation > this.waterLine)
+            return true;
+        // if(this.getElevation(screenPos) > this.waterLine) return true;
+        return false;
+    }
+    //get the minimum elevation in the grid which contains the passed in screenPosition
+    getGridMinElevation(screenPos) {
+        let gridIndex = this.screenPosToGridIndex(screenPos);
+        return this.sectionGrid[gridIndex[0]][gridIndex[1]].minElevation;
+    }
+    /**
+     * loop through grid and calculate min elevation and avg density
+     */
+    calculateGridAggregates() {
+        for (let i = 0; i < this.divisions[0]; i++) {
+            for (let j = 0; j < this.divisions[1]; j++) {
+                let minElevation = Math.min(this.sectionGrid[i][j].cornerElevation, this.sectionGrid[i + 1][j].cornerElevation, this.sectionGrid[i][j + 1].cornerElevation, this.sectionGrid[i + 1][j + 1].cornerElevation);
+                this.setSectionGridAttribute(i, j, 'minElevation', minElevation);
+                let avgDensity = (this.sectionGrid[i][j].cornerElevation +
+                    this.sectionGrid[i + 1][j].cornerElevation +
+                    this.sectionGrid[i][j + 1].cornerElevation +
+                    this.sectionGrid[i + 1][j + 1].cornerElevation) / 4;
+                this.setSectionGridAttribute(i, j, 'avgDensity', avgDensity);
+            }
+        }
+    }
+    getGridSectionsWithHighPopulation(threshold) {
+        let sections = [];
+        for (let i = 0; i < this.divisions[0]; i++) {
+            for (let j = 0; j < this.divisions[1]; j++) {
+                if (this.sectionGrid[i][j].avgDensity >= threshold) {
+                    sections.push(__WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].fromValues(i, j));
+                }
+            }
+        }
+        return sections;
+    }
+    /**
+     * Set the attribute of a section grid
+     * @param x
+     * @param y
+     * @param attr
+     * @param value
+     */
+    setSectionGridAttribute(x, y, attr, value) {
+        if (!this.sectionGrid[x]) {
+            this.sectionGrid[x] = [];
+        }
+        if (!this.sectionGrid[x][y]) {
+            this.sectionGrid[x][y] = new TerrainSection();
+        }
+        if (attr == 'cornerElevation')
+            this.sectionGrid[x][y].cornerElevation = value;
+        if (attr == 'minElevation')
+            this.sectionGrid[x][y].minElevation = value;
+        if (attr == 'cornerDensity')
+            this.sectionGrid[x][y].cornerDensity = value;
+        if (attr == 'avgDensity')
+            this.sectionGrid[x][y].avgDensity = value;
     }
     create() {
         let indicies = [];
@@ -13359,6 +13754,7 @@ class Terrain extends __WEBPACK_IMPORTED_MODULE_1__rendering_gl_Drawable__["a" /
                 //get eleation from fbm
                 let seed = __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].fromValues(this.elevationSeed, 13.322);
                 let elevation = __WEBPACK_IMPORTED_MODULE_3__noise_noise__["a" /* default */].fbm2to1(__WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].fromValues(3.0 * i / this.divisions[0] * this.aspectRatio, 3.0 * j / this.divisions[1]), seed);
+                //get population density from worley noise
                 let popDensity = this.getPopulationDensity(__WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].fromValues(x, y));
                 colors.push(elevation, popDensity, 0, 1);
                 if (i < this.divisions[0] && j < this.divisions[1]) {
@@ -13368,6 +13764,9 @@ class Terrain extends __WEBPACK_IMPORTED_MODULE_1__rendering_gl_Drawable__["a" /
                     let p4 = (this.divisions[1] + 1) * (i + 1) + j + 1;
                     indicies.push(p1, p2, p3, p3, p2, p4);
                 }
+                //save elevation and corner density to grid
+                this.setSectionGridAttribute(i, j, 'cornerElevation', elevation);
+                this.setSectionGridAttribute(i, j, 'cornerDensity', popDensity);
             }
         }
         this.colors = new Float32Array([-1, -1, 0.999, 1,
@@ -13387,7 +13786,7 @@ class Terrain extends __WEBPACK_IMPORTED_MODULE_1__rendering_gl_Drawable__["a" /
         __WEBPACK_IMPORTED_MODULE_2__globals__["a" /* gl */].bindBuffer(__WEBPACK_IMPORTED_MODULE_2__globals__["a" /* gl */].ARRAY_BUFFER, this.bufCol);
         __WEBPACK_IMPORTED_MODULE_2__globals__["a" /* gl */].bufferData(__WEBPACK_IMPORTED_MODULE_2__globals__["a" /* gl */].ARRAY_BUFFER, this.colors, __WEBPACK_IMPORTED_MODULE_2__globals__["a" /* gl */].STATIC_DRAW);
         this.numInstances = 1;
-        console.log(`Created Terrain`);
+        this.calculateGridAggregates();
     }
 }
 ;
@@ -13395,11 +13794,11 @@ class Terrain extends __WEBPACK_IMPORTED_MODULE_1__rendering_gl_Drawable__["a" /
 
 
 /***/ }),
-/* 34 */
+/* 38 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__globals__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__globals__ = __webpack_require__(3);
 
 class Drawable {
     constructor() {
@@ -13495,13 +13894,13 @@ class Drawable {
 
 
 /***/ }),
-/* 35 */
+/* 39 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_gl_matrix__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_vec_math__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__random__ = __webpack_require__(36);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_vec_math__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__random__ = __webpack_require__(14);
 
 
 
@@ -13568,65 +13967,12 @@ class Noise {
 
 
 /***/ }),
-/* 36 */
+/* 40 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_gl_matrix__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils_vec_math__ = __webpack_require__(12);
-
-
-/**
- * Various random functions to help generate noise
- */
-class Random {
-    //get a pseudo random number based upon 2 values
-    static random2to1(p, seed) {
-        return Math.abs((Math.sin(__WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].dot(__WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].add(p, p, seed), __WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].fromValues(127.1, 311.7))) * 43758.5453) % 1);
-    }
-    //get a pseudo random number based upon 1 value
-    static random1to1(p, seed) {
-        return Math.abs((Math.sin(__WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].dot(__WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].fromValues(p, 311.2), seed)) * 43758.5453) % 1);
-    }
-    //mix two number toget
-    static mix(a, b, ratio) {
-        return a + ((b - a) * (ratio));
-    }
-    static interpNoiseRandom2to1(p, seed) {
-        let fractX = p[0] % 1;
-        let x1 = Math.floor(p[0]);
-        let x2 = x1 + 1.0;
-        let fractY = p[1] % 1;
-        let y1 = Math.floor(p[1]);
-        let y2 = y1 + 1.0;
-        let v1 = this.random2to1(__WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].fromValues(x1, y1), seed);
-        let v2 = this.random2to1(__WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].fromValues(x2, y1), seed);
-        let v3 = this.random2to1(__WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].fromValues(x1, y2), seed);
-        let v4 = this.random2to1(__WEBPACK_IMPORTED_MODULE_0_gl_matrix__["c" /* vec2 */].fromValues(x2, y2), seed);
-        let i1 = this.mix(v1, v2, fractX);
-        let i2 = this.mix(v3, v4, fractX);
-        return this.mix(i1, i2, fractY);
-    }
-    static fbm2to1(p, seed, persistence = 0.5, octaves = 8.0) {
-        let total = 0.0;
-        for (let i = 0.0; i < octaves; i++) {
-            let freq = Math.pow(2.0, i);
-            let amp = Math.pow(persistence, i + 1.0);
-            total = total + this.interpNoiseRandom2to1(__WEBPACK_IMPORTED_MODULE_1__utils_vec_math__["a" /* VecMath */].multiply2(p, freq), seed) * amp;
-        }
-        return total;
-    }
-}
-/* harmony default export */ __webpack_exports__["a"] = (Random);
-
-
-/***/ }),
-/* 37 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_gl_matrix__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__globals__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__globals__ = __webpack_require__(3);
 
 
 // In this file, `gl` is accessible because it is imported above
@@ -13657,7 +14003,6 @@ class OpenGLRenderer {
         prog.setModelMatrix(model);
         prog.setViewProjMatrix(viewProj);
         prog.setCameraAxes(axes);
-        console.log(prog);
         for (let drawable of drawables) {
             prog.draw(drawable);
         }
@@ -13668,12 +14013,12 @@ class OpenGLRenderer {
 
 
 /***/ }),
-/* 38 */
+/* 41 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_gl_matrix__ = __webpack_require__(0);
-var CameraControls = __webpack_require__(39);
+var CameraControls = __webpack_require__(42);
 
 class Camera {
     constructor(position, target) {
@@ -13731,7 +14076,7 @@ class Camera {
 
 
 /***/ }),
-/* 39 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13739,12 +14084,12 @@ class Camera {
 
 module.exports = createCamera
 
-var now         = __webpack_require__(40)
-var createView  = __webpack_require__(42)
-var mouseChange = __webpack_require__(65)
-var mouseWheel  = __webpack_require__(67)
-var mouseOffset = __webpack_require__(70)
-var hasPassive  = __webpack_require__(71)
+var now         = __webpack_require__(43)
+var createView  = __webpack_require__(45)
+var mouseChange = __webpack_require__(68)
+var mouseWheel  = __webpack_require__(70)
+var mouseOffset = __webpack_require__(73)
+var hasPassive  = __webpack_require__(74)
 
 function createCamera(element, options) {
   element = element || document.body
@@ -13974,7 +14319,7 @@ function createCamera(element, options) {
 
 
 /***/ }),
-/* 40 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {module.exports =
@@ -13985,10 +14330,10 @@ function createCamera(element, options) {
     return +new Date
   }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(41)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(44)))
 
 /***/ }),
-/* 41 */
+/* 44 */
 /***/ (function(module, exports) {
 
 var g;
@@ -14015,7 +14360,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 42 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14023,9 +14368,9 @@ module.exports = g;
 
 module.exports = createViewController
 
-var createTurntable = __webpack_require__(43)
-var createOrbit     = __webpack_require__(46)
-var createMatrix    = __webpack_require__(49)
+var createTurntable = __webpack_require__(46)
+var createOrbit     = __webpack_require__(49)
+var createMatrix    = __webpack_require__(52)
 
 function ViewController(controllers, mode) {
   this._controllerNames = Object.keys(controllers)
@@ -14143,7 +14488,7 @@ function createViewController(options) {
 }
 
 /***/ }),
-/* 43 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14151,12 +14496,12 @@ function createViewController(options) {
 
 module.exports = createTurntableController
 
-var filterVector = __webpack_require__(13)
-var invert44     = __webpack_require__(4)
-var rotateM      = __webpack_require__(45)
-var cross        = __webpack_require__(15)
-var normalize3   = __webpack_require__(5)
-var dot3         = __webpack_require__(16)
+var filterVector = __webpack_require__(15)
+var invert44     = __webpack_require__(7)
+var rotateM      = __webpack_require__(48)
+var cross        = __webpack_require__(17)
+var normalize3   = __webpack_require__(8)
+var dot3         = __webpack_require__(18)
 
 function len3(x, y, z) {
   return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2))
@@ -14721,7 +15066,7 @@ function createTurntableController(options) {
 }
 
 /***/ }),
-/* 44 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14766,7 +15111,7 @@ module.exports = cubicHermite
 module.exports.derivative = dcubicHermite
 
 /***/ }),
-/* 45 */
+/* 48 */
 /***/ (function(module, exports) {
 
 module.exports = rotate;
@@ -14835,7 +15180,7 @@ function rotate(out, a, rad, axis) {
 };
 
 /***/ }),
-/* 46 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14843,11 +15188,11 @@ function rotate(out, a, rad, axis) {
 
 module.exports = createOrbitController
 
-var filterVector  = __webpack_require__(13)
-var lookAt        = __webpack_require__(17)
-var mat4FromQuat  = __webpack_require__(47)
-var invert44      = __webpack_require__(4)
-var quatFromFrame = __webpack_require__(48)
+var filterVector  = __webpack_require__(15)
+var lookAt        = __webpack_require__(19)
+var mat4FromQuat  = __webpack_require__(50)
+var invert44      = __webpack_require__(7)
+var quatFromFrame = __webpack_require__(51)
 
 function len3(x,y,z) {
   return Math.sqrt(Math.pow(x,2) + Math.pow(y,2) + Math.pow(z,2))
@@ -15234,7 +15579,7 @@ function createOrbitController(options) {
 }
 
 /***/ }),
-/* 47 */
+/* 50 */
 /***/ (function(module, exports) {
 
 module.exports = fromQuat;
@@ -15286,7 +15631,7 @@ function fromQuat(out, q) {
 };
 
 /***/ }),
-/* 48 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15333,22 +15678,22 @@ function quatFromFrame(
 }
 
 /***/ }),
-/* 49 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var bsearch   = __webpack_require__(14)
-var m4interp  = __webpack_require__(50)
-var invert44  = __webpack_require__(4)
-var rotateX   = __webpack_require__(62)
-var rotateY   = __webpack_require__(63)
-var rotateZ   = __webpack_require__(64)
-var lookAt    = __webpack_require__(17)
-var translate = __webpack_require__(19)
-var scale     = __webpack_require__(21)
-var normalize = __webpack_require__(5)
+var bsearch   = __webpack_require__(16)
+var m4interp  = __webpack_require__(53)
+var invert44  = __webpack_require__(7)
+var rotateX   = __webpack_require__(65)
+var rotateY   = __webpack_require__(66)
+var rotateZ   = __webpack_require__(67)
+var lookAt    = __webpack_require__(19)
+var translate = __webpack_require__(21)
+var scale     = __webpack_require__(23)
+var normalize = __webpack_require__(8)
 
 var DEFAULT_CENTER = [0,0,0]
 
@@ -15538,15 +15883,15 @@ function createMatrixCameraController(options) {
 
 
 /***/ }),
-/* 50 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var lerp = __webpack_require__(51)
+var lerp = __webpack_require__(54)
 
-var recompose = __webpack_require__(52)
-var decompose = __webpack_require__(55)
-var determinant = __webpack_require__(22)
-var slerp = __webpack_require__(60)
+var recompose = __webpack_require__(55)
+var decompose = __webpack_require__(58)
+var determinant = __webpack_require__(24)
+var slerp = __webpack_require__(63)
 
 var state0 = state()
 var state1 = state()
@@ -15595,7 +15940,7 @@ function vec4() {
 }
 
 /***/ }),
-/* 51 */
+/* 54 */
 /***/ (function(module, exports) {
 
 module.exports = lerp;
@@ -15620,7 +15965,7 @@ function lerp(out, a, b, t) {
 }
 
 /***/ }),
-/* 52 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -15635,12 +15980,12 @@ From: http://www.w3.org/TR/css3-transforms/#recomposing-to-a-3d-matrix
 */
 
 var mat4 = {
-    identity: __webpack_require__(18),
-    translate: __webpack_require__(19),
-    multiply: __webpack_require__(53),
-    create: __webpack_require__(20),
-    scale: __webpack_require__(21),
-    fromRotationTranslation: __webpack_require__(54)
+    identity: __webpack_require__(20),
+    translate: __webpack_require__(21),
+    multiply: __webpack_require__(56),
+    create: __webpack_require__(22),
+    scale: __webpack_require__(23),
+    fromRotationTranslation: __webpack_require__(57)
 }
 
 var rotationMatrix = mat4.create()
@@ -15685,7 +16030,7 @@ module.exports = function recomposeMat4(matrix, translation, scale, skew, perspe
 }
 
 /***/ }),
-/* 53 */
+/* 56 */
 /***/ (function(module, exports) {
 
 module.exports = multiply;
@@ -15732,7 +16077,7 @@ function multiply(out, a, b) {
 };
 
 /***/ }),
-/* 54 */
+/* 57 */
 /***/ (function(module, exports) {
 
 module.exports = fromRotationTranslation;
@@ -15790,7 +16135,7 @@ function fromRotationTranslation(out, q, v) {
 };
 
 /***/ }),
-/* 55 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*jshint unused:true*/
@@ -15810,18 +16155,18 @@ https://github.com/ChromiumWebApps/chromium/blob/master/ui/gfx/transform_util.cc
 http://www.w3.org/TR/css3-transforms/#decomposing-a-3d-matrix
 */
 
-var normalize = __webpack_require__(56)
+var normalize = __webpack_require__(59)
 
-var create = __webpack_require__(20)
-var clone = __webpack_require__(57)
-var determinant = __webpack_require__(22)
-var invert = __webpack_require__(4)
-var transpose = __webpack_require__(58)
+var create = __webpack_require__(22)
+var clone = __webpack_require__(60)
+var determinant = __webpack_require__(24)
+var invert = __webpack_require__(7)
+var transpose = __webpack_require__(61)
 var vec3 = {
-    length: __webpack_require__(59),
-    normalize: __webpack_require__(5),
-    dot: __webpack_require__(16),
-    cross: __webpack_require__(15)
+    length: __webpack_require__(62),
+    normalize: __webpack_require__(8),
+    dot: __webpack_require__(18),
+    cross: __webpack_require__(17)
 }
 
 var tmp = create()
@@ -15974,7 +16319,7 @@ function combine(out, a, b, scale1, scale2) {
 }
 
 /***/ }),
-/* 56 */
+/* 59 */
 /***/ (function(module, exports) {
 
 module.exports = function normalize(out, mat) {
@@ -15989,7 +16334,7 @@ module.exports = function normalize(out, mat) {
 }
 
 /***/ }),
-/* 57 */
+/* 60 */
 /***/ (function(module, exports) {
 
 module.exports = clone;
@@ -16022,7 +16367,7 @@ function clone(a) {
 };
 
 /***/ }),
-/* 58 */
+/* 61 */
 /***/ (function(module, exports) {
 
 module.exports = transpose;
@@ -16076,7 +16421,7 @@ function transpose(out, a) {
 };
 
 /***/ }),
-/* 59 */
+/* 62 */
 /***/ (function(module, exports) {
 
 module.exports = length;
@@ -16095,13 +16440,13 @@ function length(a) {
 }
 
 /***/ }),
-/* 60 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(61)
+module.exports = __webpack_require__(64)
 
 /***/ }),
-/* 61 */
+/* 64 */
 /***/ (function(module, exports) {
 
 module.exports = slerp
@@ -16158,7 +16503,7 @@ function slerp (out, a, b, t) {
 
 
 /***/ }),
-/* 62 */
+/* 65 */
 /***/ (function(module, exports) {
 
 module.exports = rotateX;
@@ -16207,7 +16552,7 @@ function rotateX(out, a, rad) {
 };
 
 /***/ }),
-/* 63 */
+/* 66 */
 /***/ (function(module, exports) {
 
 module.exports = rotateY;
@@ -16256,7 +16601,7 @@ function rotateY(out, a, rad) {
 };
 
 /***/ }),
-/* 64 */
+/* 67 */
 /***/ (function(module, exports) {
 
 module.exports = rotateZ;
@@ -16305,7 +16650,7 @@ function rotateZ(out, a, rad) {
 };
 
 /***/ }),
-/* 65 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16313,7 +16658,7 @@ function rotateZ(out, a, rad) {
 
 module.exports = mouseListen
 
-var mouse = __webpack_require__(66)
+var mouse = __webpack_require__(69)
 
 function mouseListen (element, callback) {
   if (!callback) {
@@ -16517,7 +16862,7 @@ function mouseListen (element, callback) {
 
 
 /***/ }),
-/* 66 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16584,13 +16929,13 @@ exports.y = mouseRelativeY
 
 
 /***/ }),
-/* 67 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var toPX = __webpack_require__(68)
+var toPX = __webpack_require__(71)
 
 module.exports = mouseWheelListen
 
@@ -16631,13 +16976,13 @@ function mouseWheelListen(element, callback, noScroll) {
 
 
 /***/ }),
-/* 68 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var parseUnit = __webpack_require__(69)
+var parseUnit = __webpack_require__(72)
 
 module.exports = toPX
 
@@ -16712,7 +17057,7 @@ function toPX(str, element) {
 
 
 /***/ }),
-/* 69 */
+/* 72 */
 /***/ (function(module, exports) {
 
 module.exports = function parseUnit(str, out) {
@@ -16727,7 +17072,7 @@ module.exports = function parseUnit(str, out) {
 }
 
 /***/ }),
-/* 70 */
+/* 73 */
 /***/ (function(module, exports) {
 
 var rootPosition = { left: 0, top: 0 }
@@ -16758,13 +17103,13 @@ function getBoundingClientOffset (element) {
 
 
 /***/ }),
-/* 71 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var isBrowser = __webpack_require__(72)
+var isBrowser = __webpack_require__(75)
 
 function detect() {
 	var supported = false
@@ -16789,18 +17134,18 @@ module.exports = isBrowser && detect()
 
 
 /***/ }),
-/* 72 */
+/* 75 */
 /***/ (function(module, exports) {
 
 module.exports = true;
 
 /***/ }),
-/* 73 */
+/* 76 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_gl_matrix__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__globals__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__globals__ = __webpack_require__(3);
 
 
 var activeProgram = null;
@@ -16957,12 +17302,12 @@ class ShaderProgram {
 
 
 /***/ }),
-/* 74 */
+/* 77 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_gl_matrix__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__globals__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__globals__ = __webpack_require__(3);
 
 
 var activeProgram = null;
@@ -17100,7 +17445,6 @@ class InstancedShaderProgram {
         // then advancing to a new value for the next four, then the next four, and
         // so on.
         __WEBPACK_IMPORTED_MODULE_1__globals__["a" /* gl */].drawElementsInstanced(d.drawMode(), d.elemCount(), __WEBPACK_IMPORTED_MODULE_1__globals__["a" /* gl */].UNSIGNED_INT, 0, d.numInstances);
-        console.log(d);
         if (this.attrPos != -1)
             __WEBPACK_IMPORTED_MODULE_1__globals__["a" /* gl */].disableVertexAttribArray(this.attrPos);
         if (this.attrNor != -1)
@@ -17118,32 +17462,316 @@ class InstancedShaderProgram {
 
 
 /***/ }),
-/* 75 */
+/* 78 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lsystem__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lsystem__ = __webpack_require__(79);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__x_rule_x_replace__ = __webpack_require__(87);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__draw_rule_turn_toward_population__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__draw_rule_turn_away_population__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__draw_rule_span_population__ = __webpack_require__(88);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__turtle__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__draw_rule_start_branch__ = __webpack_require__(89);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__constraint_water_constraint__ = __webpack_require__(90);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__constraint_edge_of_map_constraint__ = __webpack_require__(91);
 
+
+
+
+
+
+
+
+
+class RoadSection {
+    constructor() {
+        this.intersectionIds = [];
+    }
+}
 class Roads extends __WEBPACK_IMPORTED_MODULE_0__lsystem__["a" /* LSystem */] {
     //constructor
     constructor(iterations, options) {
         super(iterations, options);
-        this.axiom = 'F';
+        this.roadGrid = [];
+        this.terrain = options.terrain;
+        this.initRoadSections();
+        this.axiom = 'FL';
         this.addStandardDrawRules();
+        this.addDrawRule('P', new __WEBPACK_IMPORTED_MODULE_2__draw_rule_turn_toward_population__["a" /* TurnTowardPopulation */]({
+            seed: this.options.seed,
+            terrain: this.options.terrain
+        }));
+        this.addDrawRule('p', new __WEBPACK_IMPORTED_MODULE_3__draw_rule_turn_away_population__["a" /* TurnAwayPopulation */]({
+            seed: this.options.seed,
+            terrain: this.options.terrain
+        }));
+        this.addDrawRule('S', new __WEBPACK_IMPORTED_MODULE_4__draw_rule_span_population__["a" /* SpanPopulation */]({
+            seed: this.options.seed,
+            terrain: this.options.terrain
+        }));
+        this.addDrawRule('[', new __WEBPACK_IMPORTED_MODULE_6__draw_rule_start_branch__["a" /* StartBranch */]({ terrain: this.terrain }));
+        this.addXRule('A', new __WEBPACK_IMPORTED_MODULE_1__x_rule_x_replace__["a" /* XReplace */]('FPFPFPFPFPFjjjPFPFPFPFPF'));
+        this.addXRule('L', new __WEBPACK_IMPORTED_MODULE_1__x_rule_x_replace__["a" /* XReplace */]('A[--L]A[++L]A[--L]A[++L]AA[--L]A[++L]A'));
+        //
+        this.addConstraint(new __WEBPACK_IMPORTED_MODULE_7__constraint_water_constraint__["a" /* WaterConstraint */]({ terrain: this.terrain, roads: this }));
+        this.addConstraint(new __WEBPACK_IMPORTED_MODULE_8__constraint_edge_of_map_constraint__["a" /* EdgeOfMapConstraint */]({ roads: this }));
+        this.turtle.roadType = __WEBPACK_IMPORTED_MODULE_5__turtle__["a" /* RoadType */].HIGHWAY;
+    }
+    addConstraint(constraint) {
+        this.constraints.push(constraint);
+    }
+    addIntersection(intersection) {
+        super.addIntersection(intersection);
+        //add the intersection to the appropriate grid section
+        let gridIndex = this.terrain.screenPosToGridIndex(intersection.pos);
+        this.roadGrid[gridIndex[0]][gridIndex[1]].intersectionIds.push(this.intersections.length - 1);
+    }
+    //Loop through all of the terrain divisions and create a Raod
+    initRoadSections() {
+        //loop through the terrain trid
+        this.roadGrid = [];
+        for (let i = 0; i < this.terrain.divisions[0]; i++) {
+            this.roadGrid.push([]);
+            for (let j = 0; j < this.terrain.divisions[0]; j++) {
+                this.roadGrid[i].push(new RoadSection());
+                this.roadGrid[i][j].terrainSection = this.terrain.sectionGrid[i][j];
+            }
+        }
+    }
+    addNeighborhoods() {
+        console.log(this.segments);
+        this.axiom = 'FXFFXFXFFX';
+        this.addXRule('X', new __WEBPACK_IMPORTED_MODULE_1__x_rule_x_replace__["a" /* XReplace */]('[-FX][FX][+FX]'));
+        this.iterations = 5;
+        this.runExpansionIterations();
+        let numInt = this.intersections.length;
+        let numNeighborhoods = 1000;
+        for (let i = 0; i < numNeighborhoods; i++) {
+            let intId = Math.floor(i * numInt / numNeighborhoods);
+            this.addNeighborhood(intId, Math.PI * i / 6);
+        }
+    }
+    addNeighborhood(intersectionId, startDir) {
+        this.turtle = new __WEBPACK_IMPORTED_MODULE_5__turtle__["b" /* Turtle */]();
+        this.turtle.roadType = __WEBPACK_IMPORTED_MODULE_5__turtle__["a" /* RoadType */].STREET;
+        this.turtle.dir = startDir;
+        this.turtle.lastIntersectionId = intersectionId;
+        this.turtle.angle = Math.PI / 2;
+        this.turtle.pos = this.intersections[intersectionId].pos;
+        this.runDrawRules();
     }
 }
 /* harmony default export */ __webpack_exports__["a"] = (Roads);
 
 
 /***/ }),
-/* 76 */
+/* 79 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__ = __webpack_require__(3);
+/* unused harmony export SegmentStatus */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__turtle__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_gl_matrix__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__draw_rule_turn_right__ = __webpack_require__(80);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__draw_rule_turn_left__ = __webpack_require__(81);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__draw_rule_random_angle__ = __webpack_require__(82);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__draw_rule_scale_length__ = __webpack_require__(83);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__draw_rule_scale_angle__ = __webpack_require__(84);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__draw_rule_end_branch__ = __webpack_require__(85);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__draw_rule_draw__ = __webpack_require__(86);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__utils_vec_math__ = __webpack_require__(6);
+
+
+
+
+
+
+
+
+
+
+var SegmentStatus;
+(function (SegmentStatus) {
+    SegmentStatus["OPEN"] = "open";
+    SegmentStatus["CLOSED"] = "closed";
+})(SegmentStatus || (SegmentStatus = {}));
+class Segment {
+}
+/* unused harmony export Segment */
+
+class Intersection {
+}
+/* unused harmony export Intersection */
+
+class LSystem {
+    //initialize with the options
+    constructor(iterations, options) {
+        //the segments already created
+        this.segments = [];
+        this.intersections = [];
+        //the constraints to check for each prospective segment
+        this.constraints = [];
+        //the set of expansion rules
+        this.xRules = new Map();
+        //the set of drawing rules
+        this.drawRules = new Map();
+        //the current state of the turtle
+        this.turtle = new __WEBPACK_IMPORTED_MODULE_0__turtle__["b" /* Turtle */]();
+        //the turtle stack
+        this.turtleStack = [];
+        this.iterations = iterations;
+        this.options = options;
+        this.curIteration = 0;
+    }
+    //add an expansion rule
+    addXRule(char, rule) {
+        this.xRules.set(char, rule);
+    }
+    addDrawRule(char, rule) {
+        this.drawRules.set(char, rule);
+    }
+    //do one iteration over the string
+    iterate(iterations) {
+        let nextString = '';
+        let params = { iterations: iterations };
+        for (let charIndex = 0; charIndex < this.curString.length; charIndex++) {
+            let char = this.curString.charAt(charIndex);
+            let func = this.xRules.get(char);
+            //if rule is found then use
+            if (func) {
+                //special case for handling drawing
+                nextString += func.apply(char, params);
+            }
+            //if no rule found then just retain the same character
+            else {
+                nextString += char;
+            }
+        }
+        this.curString = nextString;
+        this.curIteration++;
+    }
+    runExpansionIterations() {
+        this.curString = this.axiom;
+        for (let i = 0; i < this.iterations; i++) {
+            this.iterate(i);
+        }
+    }
+    addSegment(startIntersectionId, endPos, rotation, roadType) {
+        //create possible segment
+        let segment = new Segment();
+        let segmentId = this.segments.length;
+        segment.startIntersectionId = startIntersectionId;
+        segment.roadType = roadType;
+        segment.rotation = rotation;
+        segment.endIntersectionId = this.intersections.length;
+        //do the checks
+        for (let i = 0; i < this.constraints.length; i++) {
+            //check if constraint fails
+            if (!this.constraints[i].checkConstraint(segment, endPos)) {
+                //try to adjust it
+                let adj = this.constraints[i].attemptAdjustment(segment, endPos);
+                if (!adj.added)
+                    return adj;
+            }
+        }
+        let nearestIntersectionId = this.findNearbyIntersectionId(endPos, 0.025);
+        if (nearestIntersectionId !== null) {
+            segment.endIntersectionId = nearestIntersectionId;
+            segment.rotation = __WEBPACK_IMPORTED_MODULE_9__utils_vec_math__["a" /* VecMath */].getRotationFromPoints(this.intersections[startIntersectionId].pos, this.intersections[nearestIntersectionId].pos);
+            this.segments.push(segment);
+            this.intersections[startIntersectionId].segmentIds.push(segmentId);
+            this.intersections[nearestIntersectionId].segmentIds.push(segmentId);
+            return {
+                added: true,
+                intersected: true,
+                segment: segment
+            };
+        }
+        let endIntersection = new Intersection();
+        endIntersection.pos = endPos;
+        endIntersection.segmentIds = [segmentId];
+        this.intersections[startIntersectionId].segmentIds.push(this.segments.length);
+        this.segments.push(segment);
+        this.addIntersection(endIntersection);
+        return {
+            added: true,
+            intersected: false,
+            segment: segment
+        };
+    }
+    addIntersection(intersection) {
+        this.intersections.push(intersection);
+    }
+    findNearbyIntersectionId(pos, distThreshold) {
+        let closestDist = distThreshold;
+        let closestId = null;
+        for (let i = 0; i < this.intersections.length; i++) {
+            let dist = __WEBPACK_IMPORTED_MODULE_1_gl_matrix__["c" /* vec2 */].dist(pos, this.intersections[i].pos);
+            if (dist < closestDist) {
+                closestDist = dist;
+                closestId = i;
+            }
+        }
+        return closestId;
+    }
+    setStartPosition() {
+        //add the first intersection
+        let firstIntersection = new Intersection();
+        firstIntersection.segmentIds = [];
+        firstIntersection.pos = __WEBPACK_IMPORTED_MODULE_1_gl_matrix__["c" /* vec2 */].fromValues(0, 0);
+        this.addIntersection(firstIntersection);
+        this.turtle.lastIntersectionId = 0;
+    }
+    runDrawRules() {
+        if (this.intersections.length == 0)
+            this.setStartPosition();
+        //do the initial scaling
+        for (let charIndex = 0; charIndex < this.curString.length; charIndex++) {
+            let char = this.curString.charAt(charIndex);
+            let func = this.drawRules.get(char);
+            //if rule is found then use
+            if (func) {
+                //check to see if we have an option string for our draw rule
+                let option = '';
+                //options for the symbol are encloesed in () -- if they exist get the option
+                if (this.curString.charAt(charIndex + 1) == '(') {
+                    charIndex += 2;
+                    while (this.curString.charAt(charIndex) !== ')') {
+                        option += this.curString.charAt(charIndex);
+                        charIndex++;
+                    }
+                }
+                this.turtle = func.draw(this.turtle, this.turtleStack, this.segments, option);
+            }
+        }
+    }
+    /**
+     * Add the standard rules based off Houdini codes
+     */
+    addStandardDrawRules() {
+        this.addDrawRule('F', new __WEBPACK_IMPORTED_MODULE_8__draw_rule_draw__["a" /* Draw */]({ lsystem: this, seed: 2 }));
+        this.addDrawRule('+', new __WEBPACK_IMPORTED_MODULE_2__draw_rule_turn_right__["a" /* TurnRight */]());
+        this.addDrawRule('-', new __WEBPACK_IMPORTED_MODULE_3__draw_rule_turn_left__["a" /* TurnLeft */]());
+        this.addDrawRule(']', new __WEBPACK_IMPORTED_MODULE_7__draw_rule_end_branch__["a" /* EndBranch */]());
+        this.addDrawRule('~', new __WEBPACK_IMPORTED_MODULE_4__draw_rule_random_angle__["a" /* RandomAngle */]({ seed: 1 }));
+        this.addDrawRule('"', new __WEBPACK_IMPORTED_MODULE_5__draw_rule_scale_length__["a" /* ScaleLength */]());
+        this.addDrawRule(";", new __WEBPACK_IMPORTED_MODULE_6__draw_rule_scale_angle__["a" /* ScaleAngle */]());
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = LSystem;
+
+
+
+/***/ }),
+/* 80 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__ = __webpack_require__(1);
 
 class TurnRight extends __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__["a" /* BaseDrawRule */] {
-    draw(turtle, turtleStack, segments, newSegments, options) {
+    draw(turtle, turtleStack, segments, options) {
         let angle = turtle.angle;
         if (!isNaN(parseFloat(options))) {
             angle = parseFloat(options);
@@ -17157,14 +17785,14 @@ class TurnRight extends __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__["a" /* Bas
 
 
 /***/ }),
-/* 77 */
+/* 81 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__ = __webpack_require__(1);
 
 class TurnLeft extends __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__["a" /* BaseDrawRule */] {
-    draw(turtle, turtleStack, segments, newSegments, options) {
+    draw(turtle, turtleStack, segments, options) {
         let angle = turtle.angle;
         if (!isNaN(parseFloat(options))) {
             angle = parseFloat(options);
@@ -17178,19 +17806,19 @@ class TurnLeft extends __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__["a" /* Base
 
 
 /***/ }),
-/* 78 */
+/* 82 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__ = __webpack_require__(1);
 
-let Prando = __webpack_require__(79).default;
+let Prando = __webpack_require__(5).default;
 class RandomAngle extends __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__["a" /* BaseDrawRule */] {
     constructor(options) {
         super(options);
         this.prando = new Prando(options.seed);
     }
-    draw(turtle, turtleStack, segments, newSegments, options) {
+    draw(turtle, turtleStack, segments, options) {
         //default to the current turtle roll angle
         let maxAngle = turtle.angle;
         if (parseFloat(options) > 0) {
@@ -17208,197 +17836,14 @@ class RandomAngle extends __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__["a" /* B
 
 
 /***/ }),
-/* 79 */
+/* 83 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-var Prando = /** @class */ (function () {
-    // ================================================================================================================
-    // CONSTRUCTOR ----------------------------------------------------------------------------------------------------
-    /**
-     * Generate a new Prando pseudo-random number generator.
-     *
-     * @param seed - A number or string seed that determines which pseudo-random number sequence will be created. Defaults to current time.
-     */
-    function Prando(seed) {
-        this._value = NaN;
-        if (typeof (seed) === "string") {
-            // String seed
-            this._seed = this.hashCode(seed);
-        }
-        else if (typeof (seed) === "number") {
-            // Numeric seed
-            this._seed = this.getSafeSeed(seed);
-        }
-        else {
-            // Pseudo-random seed
-            this._seed = this.getSafeSeed(Prando.MIN + Math.floor((Prando.MAX - Prando.MIN) * Math.random()));
-        }
-        this.reset();
-    }
-    // ================================================================================================================
-    // PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
-    /**
-     * Generates a pseudo-random number between a lower (inclusive) and a higher (exclusive) bounds.
-     *
-     * @param min - The minimum number that can be randomly generated.
-     * @param pseudoMax - The maximum number that can be randomly generated (exclusive).
-     * @return The generated pseudo-random number.
-     */
-    Prando.prototype.next = function (min, pseudoMax) {
-        if (min === void 0) { min = 0; }
-        if (pseudoMax === void 0) { pseudoMax = 1; }
-        this.recalculate();
-        return this.map(this._value, Prando.MIN, Prando.MAX, min, pseudoMax);
-    };
-    /**
-     * Generates a pseudo-random integer number in a range (inclusive).
-     *
-     * @param min - The minimum number that can be randomly generated.
-     * @param max - The maximum number that can be randomly generated.
-     * @return The generated pseudo-random number.
-     */
-    Prando.prototype.nextInt = function (min, max) {
-        if (min === void 0) { min = 10; }
-        if (max === void 0) { max = 100; }
-        this.recalculate();
-        return Math.floor(this.map(this._value, Prando.MIN, Prando.MAX, min, max + 1));
-    };
-    /**
-     * Generates a pseudo-random string sequence of a particular length from a specific character range.
-     *
-     * Note: keep in mind that creating a random string sequence does not guarantee uniqueness; there is always a
-     * 1 in (char_length^string_length) chance of collision. For real unique string ids, always check for
-     * pre-existing ids, or employ a robust GUID/UUID generator.
-     *
-     * @param length - Length of the strting to be generated.
-     * @param chars - Characters that are used when creating the random string. Defaults to all alphanumeric chars (A-Z, a-z, 0-9).
-     * @return The generated string sequence.
-     */
-    Prando.prototype.nextString = function (length, chars) {
-        if (length === void 0) { length = 16; }
-        if (chars === void 0) { chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"; }
-        var str = "";
-        while (str.length < length) {
-            str += this.nextChar(chars);
-        }
-        return str;
-    };
-    /**
-     * Generates a pseudo-random string of 1 character specific character range.
-     *
-     * @param chars - Characters that are used when creating the random string. Defaults to all alphanumeric chars (A-Z, a-z, 0-9).
-     * @return The generated character.
-     */
-    Prando.prototype.nextChar = function (chars) {
-        if (chars === void 0) { chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"; }
-        this.recalculate();
-        return chars.substr(this.nextInt(0, chars.length - 1), 1);
-    };
-    /**
-     * Picks a pseudo-random item from an array. The array is left unmodified.
-     *
-     * Note: keep in mind that while the returned item will be random enough, picking one item from the array at a time
-     * does not guarantee nor imply that a sequence of random non-repeating items will be picked. If you want to
-     * *pick items in a random order* from an array, instead of *pick one random item from an array*, it's best to
-     * apply a *shuffle* transformation to the array instead, then read it linearly.
-     *
-     * @param array - Array of any type containing one or more candidates for random picking.
-     * @return An item from the array.
-     */
-    Prando.prototype.nextArrayItem = function (array) {
-        this.recalculate();
-        return array[this.nextInt(0, array.length - 1)];
-    };
-    /**
-     * Generates a pseudo-random boolean.
-     *
-     * @return A value of true or false.
-     */
-    Prando.prototype.nextBoolean = function () {
-        this.recalculate();
-        return this._value > 0.5;
-    };
-    /**
-     * Skips ahead in the sequence of numbers that are being generated. This is equivalent to
-     * calling next() a specified number of times, but faster since it doesn't need to map the
-     * new random numbers to a range and return it.
-     *
-     * @param iterations - The number of items to skip ahead.
-     */
-    Prando.prototype.skip = function (iterations) {
-        if (iterations === void 0) { iterations = 1; }
-        while (iterations-- > 0) {
-            this.recalculate();
-        }
-    };
-    /**
-     * Reset the pseudo-random number sequence back to its starting seed. Further calls to next()
-     * will then produce the same sequence of numbers it had produced before. This is equivalent to
-     * creating a new Prando instance with the same seed as another Prando instance.
-     *
-     * Example:
-     * let rng = new Prando(12345678);
-     * console.log(rng.next()); // 0.6177754114889017
-     * console.log(rng.next()); // 0.5784605181725837
-     * rng.reset();
-     * console.log(rng.next()); // 0.6177754114889017 again
-     * console.log(rng.next()); // 0.5784605181725837 again
-     */
-    Prando.prototype.reset = function () {
-        this._value = this._seed;
-    };
-    // ================================================================================================================
-    // PRIVATE INTERFACE ----------------------------------------------------------------------------------------------
-    Prando.prototype.recalculate = function () {
-        this._value = this.xorshift(this._value);
-    };
-    Prando.prototype.xorshift = function (value) {
-        // Xorshift*32
-        // Based on George Marsaglia's work: http://www.jstatsoft.org/v08/i14/paper
-        value ^= value << 13;
-        value ^= value >> 17;
-        value ^= value << 5;
-        return value;
-    };
-    Prando.prototype.map = function (val, minFrom, maxFrom, minTo, maxTo) {
-        return ((val - minFrom) / (maxFrom - minFrom)) * (maxTo - minTo) + minTo;
-    };
-    Prando.prototype.hashCode = function (str) {
-        var hash = 0;
-        if (str) {
-            var l = str.length;
-            for (var i = 0; i < l; i++) {
-                hash = ((hash << 5) - hash) + str.charCodeAt(i);
-                hash |= 0;
-                hash = this.xorshift(hash);
-            }
-        }
-        return this.getSafeSeed(hash);
-    };
-    Prando.prototype.getSafeSeed = function (seed) {
-        if (seed === 0)
-            return 1;
-        return seed;
-    };
-    Prando.MIN = -2147483648; // Int32 min
-    Prando.MAX = 2147483647; // Int32 max
-    return Prando;
-}());
-
-/* harmony default export */ __webpack_exports__["default"] = (Prando);
-
-
-/***/ }),
-/* 80 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__ = __webpack_require__(1);
 
 class ScaleLength extends __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__["a" /* BaseDrawRule */] {
-    draw(turtle, turtleStack, segments, newSegments, options) {
+    draw(turtle, turtleStack, segments, options) {
         let scale = turtle.lengthScale;
         if (!isNaN(parseFloat(options))) {
             scale = parseFloat(options);
@@ -17412,14 +17857,14 @@ class ScaleLength extends __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__["a" /* B
 
 
 /***/ }),
-/* 81 */
+/* 84 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__ = __webpack_require__(1);
 
 class ScaleAngle extends __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__["a" /* BaseDrawRule */] {
-    draw(turtle, turtleStack, segments, newSegments, options) {
+    draw(turtle, turtleStack, segments, options) {
         let scale = turtle.angleScale;
         if (!isNaN(parseFloat(options))) {
             scale = parseFloat(options);
@@ -17433,34 +17878,17 @@ class ScaleAngle extends __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__["a" /* Ba
 
 
 /***/ }),
-/* 82 */
+/* 85 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__turtle__ = __webpack_require__(6);
-
-
-class StartBranch extends __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__["a" /* BaseDrawRule */] {
-    draw(turtle, turtleStack, segments, newSegments) {
-        turtleStack.push(Object(__WEBPACK_IMPORTED_MODULE_1__turtle__["c" /* cloneTurtle */])(turtle));
-        return turtle;
-    }
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = StartBranch;
-
-
-
-/***/ }),
-/* 83 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__ = __webpack_require__(1);
 
 class EndBranch extends __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__["a" /* BaseDrawRule */] {
-    draw(turtle, turtleStack, segments, newSegments) {
-        turtle = turtleStack.pop();
+    draw(turtle, turtleStack, segments) {
+        if (turtleStack.length > 0) {
+            turtle = turtleStack.pop();
+        }
         return turtle;
     }
 }
@@ -17469,13 +17897,13 @@ class EndBranch extends __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__["a" /* Bas
 
 
 /***/ }),
-/* 84 */
+/* 86 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lsystem__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_gl_matrix__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_gl_matrix__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_prando__ = __webpack_require__(5);
 
 
 
@@ -17483,22 +17911,32 @@ class Draw extends __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__["a" /* BaseDraw
     constructor(options) {
         super(options);
         this.lsystem = options.lsystem;
+        this.prando = new __WEBPACK_IMPORTED_MODULE_2_prando__["default"](options.seed);
     }
-    draw(turtle, turtleStack, segments, newSegments) {
+    draw(turtle, turtleStack, segments) {
+        if (turtle.branchEnded) {
+            return turtle;
+        }
         //create the standard segment
-        let segment = new __WEBPACK_IMPORTED_MODULE_1__lsystem__["b" /* Segment */]();
-        let distance = __WEBPACK_IMPORTED_MODULE_2_gl_matrix__["c" /* vec2 */].fromValues(Math.cos(turtle.dir) * turtle.segmentLength, Math.sin(turtle.dir) * turtle.segmentLength);
-        segment.startPoint = turtle.pos;
-        segment.endPoint = __WEBPACK_IMPORTED_MODULE_2_gl_matrix__["c" /* vec2 */].create();
-        __WEBPACK_IMPORTED_MODULE_2_gl_matrix__["c" /* vec2 */].add(segment.endPoint, segment.startPoint, distance);
-        segment.roadType = turtle.roadType;
-        segment.rotation = turtle.dir;
+        let distance = __WEBPACK_IMPORTED_MODULE_1_gl_matrix__["c" /* vec2 */].fromValues(Math.cos(turtle.dir) * turtle.segmentLength, Math.sin(turtle.dir) * turtle.segmentLength);
+        let endPoint = __WEBPACK_IMPORTED_MODULE_1_gl_matrix__["c" /* vec2 */].create();
+        __WEBPACK_IMPORTED_MODULE_1_gl_matrix__["c" /* vec2 */].add(endPoint, turtle.pos, distance);
+        console.log(turtle.roadType);
         //try to add the segment
-        let addSegment = this.lsystem.addSegment(segment);
+        let result = this.lsystem.addSegment(turtle.lastIntersectionId, endPoint, turtle.dir, turtle.roadType);
         //if successful move our turtle
-        if (addSegment !== null) {
-            turtle.pos = addSegment.endPoint;
-            turtle.dir = addSegment.rotation;
+        if (result.added) {
+            turtle.pos = this.lsystem.intersections[result.segment.endIntersectionId].pos;
+            turtle.dir = result.segment.rotation;
+            turtle.lastIntersectionId = result.segment.endIntersectionId;
+            if (result.intersected) {
+                if (this.prando.next() < 1) {
+                    turtle.branchEnded = true;
+                }
+            }
+        }
+        else {
+            turtle.branchEnded = true;
         }
         return turtle;
     }
@@ -17508,13 +17946,164 @@ class Draw extends __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__["a" /* BaseDraw
 
 
 /***/ }),
-/* 85 */
+/* 87 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__globals__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__rendering_gl_InstancedDrawable__ = __webpack_require__(86);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__lsystem_turtle__ = __webpack_require__(6);
+class XReplace {
+    constructor(output) {
+        this.output = output;
+    }
+    apply(string, params) {
+        return this.output;
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = XReplace;
+
+
+
+/***/ }),
+/* 88 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prando__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__turn_toward_population__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__turn_away_population__ = __webpack_require__(26);
+
+
+
+
+class SpanPopulation extends __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__["a" /* BaseDrawRule */] {
+    constructor(options) {
+        super(options);
+        this.prando = new __WEBPACK_IMPORTED_MODULE_1_prando__["default"](options.seed);
+        this.terrain = options.terrain;
+    }
+    draw(turtle, turtleStack, segments, options) {
+        let rule;
+        if (this.terrain.getPopulationDensity(turtle.pos) < 0.9) {
+            rule = new __WEBPACK_IMPORTED_MODULE_2__turn_toward_population__["a" /* TurnTowardPopulation */](this.options);
+        }
+        else {
+            rule = new __WEBPACK_IMPORTED_MODULE_3__turn_away_population__["a" /* TurnAwayPopulation */](this.options);
+        }
+        return rule.draw(turtle, turtleStack, segments, options);
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = SpanPopulation;
+
+
+
+/***/ }),
+/* 89 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__turtle__ = __webpack_require__(4);
+
+
+class StartBranch extends __WEBPACK_IMPORTED_MODULE_0__base_draw_rule__["a" /* BaseDrawRule */] {
+    constructor(options) {
+        super(options);
+        this.terrain = options.terrain;
+    }
+    draw(turtle, turtleStack, segments) {
+        turtleStack.push(Object(__WEBPACK_IMPORTED_MODULE_1__turtle__["c" /* cloneTurtle */])(turtle));
+        if (!this.terrain.positionOnLand(turtle.pos)) {
+            turtle.branchEnded = true;
+        }
+        return turtle;
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = StartBranch;
+
+
+
+/***/ }),
+/* 90 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__turtle__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__constraint__ = __webpack_require__(27);
+
+
+class WaterConstraint {
+    constructor(options) {
+        this.terrain = options.terrain;
+        this.roads = options.roads;
+    }
+    checkConstraint(segment, endPos) {
+        if (segment.roadType == __WEBPACK_IMPORTED_MODULE_0__turtle__["a" /* RoadType */].STREET) {
+            if (!this.terrain.positionOnLand(endPos)) {
+                return false;
+            }
+        }
+        if (segment.roadType == __WEBPACK_IMPORTED_MODULE_0__turtle__["a" /* RoadType */].STREET) {
+            //if(segment.startIntersectionId)
+        }
+        return true;
+    }
+    attemptAdjustment(segment, endPos) {
+        let adj = new __WEBPACK_IMPORTED_MODULE_1__constraint__["a" /* ConstraintAdjustment */]();
+        adj.added = false;
+        adj.intersected = false;
+        {
+            false;
+        }
+        ;
+        return adj;
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = WaterConstraint;
+
+
+
+/***/ }),
+/* 91 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__constraint__ = __webpack_require__(27);
+
+class EdgeOfMapConstraint {
+    constructor(options) {
+        this.roads = options.roads;
+    }
+    checkConstraint(segment, endPos) {
+        let startPos = this.roads.intersections[segment.startIntersectionId].pos;
+        if (Math.abs(startPos[0]) > 1)
+            return false;
+        if (Math.abs(startPos[1]) > 1)
+            return false;
+        return true;
+    }
+    attemptAdjustment(segment, endPos) {
+        let adj = new __WEBPACK_IMPORTED_MODULE_0__constraint__["a" /* ConstraintAdjustment */]();
+        adj.added = false;
+        adj.intersected = false;
+        {
+            false;
+        }
+        ;
+        return adj;
+    }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = EdgeOfMapConstraint;
+
+
+
+/***/ }),
+/* 92 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__globals__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__rendering_gl_InstancedDrawable__ = __webpack_require__(93);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__lsystem_turtle__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_gl_matrix__ = __webpack_require__(0);
 
 
@@ -17540,24 +18129,25 @@ class RoadSegments extends __WEBPACK_IMPORTED_MODULE_1__rendering_gl_InstancedDr
         __WEBPACK_IMPORTED_MODULE_0__globals__["a" /* gl */].bufferData(__WEBPACK_IMPORTED_MODULE_0__globals__["a" /* gl */].ELEMENT_ARRAY_BUFFER, this.indices, __WEBPACK_IMPORTED_MODULE_0__globals__["a" /* gl */].STATIC_DRAW);
         __WEBPACK_IMPORTED_MODULE_0__globals__["a" /* gl */].bindBuffer(__WEBPACK_IMPORTED_MODULE_0__globals__["a" /* gl */].ARRAY_BUFFER, this.bufPos);
         __WEBPACK_IMPORTED_MODULE_0__globals__["a" /* gl */].bufferData(__WEBPACK_IMPORTED_MODULE_0__globals__["a" /* gl */].ARRAY_BUFFER, this.positions, __WEBPACK_IMPORTED_MODULE_0__globals__["a" /* gl */].STATIC_DRAW);
-        console.log(`Created Road Segment`);
     }
-    setInstanceVBOs(segments) {
+    setInstanceVBOs(segments, intersections) {
         let offsets = [];
         let colors = [];
         let width;
         this.numInstances = segments.length;
         for (let i = 0; i < segments.length; i++) {
-            offsets.push(segments[i].startPoint[0], segments[i].startPoint[1], 0);
+            let startPos = intersections[segments[i].startIntersectionId].pos;
+            let endPos = intersections[segments[i].endIntersectionId].pos;
+            offsets.push(startPos[0], startPos[1], 0);
             switch (segments[i].roadType) {
                 case __WEBPACK_IMPORTED_MODULE_2__lsystem_turtle__["a" /* RoadType */].HIGHWAY:
                     width = 0.01;
                     break;
-                case __WEBPACK_IMPORTED_MODULE_2__lsystem_turtle__["a" /* RoadType */].ROAD:
+                case __WEBPACK_IMPORTED_MODULE_2__lsystem_turtle__["a" /* RoadType */].STREET:
                     width = 0.005;
                     break;
             }
-            length = __WEBPACK_IMPORTED_MODULE_3_gl_matrix__["c" /* vec2 */].dist(segments[i].startPoint, segments[i].endPoint);
+            length = __WEBPACK_IMPORTED_MODULE_3_gl_matrix__["c" /* vec2 */].dist(startPos, endPos);
             colors.push(length, width, segments[i].rotation, 0);
         }
         this.offsets = new Float32Array(offsets);
@@ -17573,11 +18163,11 @@ class RoadSegments extends __WEBPACK_IMPORTED_MODULE_1__rendering_gl_InstancedDr
 
 
 /***/ }),
-/* 86 */
+/* 93 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__globals__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__globals__ = __webpack_require__(3);
 
 class InstancedDrawable {
     constructor() {
@@ -17713,28 +18303,28 @@ class InstancedDrawable {
 
 
 /***/ }),
-/* 87 */
+/* 94 */
 /***/ (function(module, exports) {
 
 module.exports = "#version 300 es\nprecision highp float;\n\n// The vertex shader used to render the background of the scene\n\nin vec4 vs_Pos;\nin vec4 vs_Col;\nout vec4 fs_Pos;\nout vec4 fs_Col;\n\nvoid main() {\n  fs_Col = vs_Col;\n  fs_Pos = vs_Pos;\n  gl_Position = vs_Pos;\n}\n"
 
 /***/ }),
-/* 88 */
+/* 95 */
 /***/ (function(module, exports) {
 
 module.exports = "#version 300 es\nprecision highp float;\n\nuniform vec3 u_Eye, u_Ref, u_Up;\nuniform vec2 u_Dimensions;\nuniform int u_MapType;\nuniform float u_Time;\n\nin vec4 fs_Pos;\nin vec4 fs_Col;\nout vec4 out_Col;\n\nvoid main() {\n  //water level\n  float waterLevel = 0.4;\n\n  //elevation map\n  if(u_MapType == 1) {\n    if(fs_Col.x < waterLevel) {\n       out_Col = vec4(0.4, 0.4, 1.0, 1.0);\n    }\n    else {\n      out_Col = vec4(vec3(fs_Col.r), 1.0);\n    }\n  }\n\n  //flat map\n  else if(u_MapType == 2) {\n    if(fs_Col.x < waterLevel) {\n       out_Col = vec4(0.4, 0.4, 1.0, 1.0);\n    }\n    else {\n      out_Col = vec4(vec3(0.8), 1.0);\n    }\n  }\n\n  //population density\n  if(u_MapType == 3) {\n    if(fs_Col.x < waterLevel) {\n       out_Col = vec4(0.4, 0.4, 1.0, 1.0);\n    }\n    else {\n      out_Col = vec4(vec3(fs_Col.g), 1.0);\n    }\n  }\n}\n"
 
 /***/ }),
-/* 89 */
+/* 96 */
 /***/ (function(module, exports) {
 
-module.exports = "#version 300 es\n\nuniform mat4 u_ViewProj;\nuniform float u_Time;\n\nuniform mat3 u_CameraAxes; // Used for rendering particles as billboards (quads that are always looking at the camera)\n// gl_Position = center + vs_Pos.x * camRight + vs_Pos.y * camUp;\n\nin vec4 vs_Pos; // Non-instanced; each particle is the same quad drawn in a different place\nin vec4 vs_Nor; // Non-instanced, and presently unused\nin vec4 vs_Col; // An instanced rendering attribute; each particle instance has a different color\nin vec3 vs_Translate; // Another instance rendering attribute used to position each quad instance in the scene\nin vec2 vs_UV; // Non-instanced, and presently unused in main(). Feel free to use it for your meshes.\n\nout vec4 fs_Col;\nout vec4 fs_Pos;\n\nvoid main()\n{\n  fs_Col = vs_Col;\n  fs_Pos = vs_Pos;\n  //scale by width and height\n  fs_Pos.x = vs_Pos.x * vs_Col.x;\n  fs_Pos.y = vs_Pos.y * vs_Col.y;\n\n  //rotate\n  float s = sin(vs_Col.z);\n  float c = cos(vs_Col.z);\n  fs_Pos.xy = mat2(c, -s, s, c) * fs_Pos.xy;\n\n  //translate\n  fs_Pos.xy += vs_Translate.xy;\n  gl_Position = fs_Pos;\n}\n"
+module.exports = "#version 300 es\n\nuniform mat4 u_ViewProj;\nuniform float u_Time;\n\nuniform mat3 u_CameraAxes; // Used for rendering particles as billboards (quads that are always looking at the camera)\n// gl_Position = center + vs_Pos.x * camRight + vs_Pos.y * camUp;\n\nin vec4 vs_Pos; // Non-instanced; each particle is the same quad drawn in a different place\nin vec4 vs_Nor; // Non-instanced, and presently unused\nin vec4 vs_Col; // An instanced rendering attribute; each particle instance has a different color\nin vec3 vs_Translate; // Another instance rendering attribute used to position each quad instance in the scene\nin vec2 vs_UV; // Non-instanced, and presently unused in main(). Feel free to use it for your meshes.\n\nout vec4 fs_Col;\nout vec4 fs_Pos;\n\nvoid main()\n{\n  fs_Col = vs_Col;\n  fs_Pos = vs_Pos;\n  //scale by width and height\n  fs_Pos.x = vs_Pos.x * vs_Col.x;\n  fs_Pos.y = vs_Pos.y * vs_Col.y;\n\n  //rotate\n  float s = sin(vs_Col.z);\n  float c = cos(vs_Col.z);\n  fs_Pos.xy = mat2(c, s, -s, c) * fs_Pos.xy;\n\n  //translate\n  fs_Pos.x += vs_Translate.x;\n  fs_Pos.y += vs_Translate.y;\n  if(vs_Pos.x == 0.0) {\n//    fs_Pos.x\n  }\n\n  gl_Position = fs_Pos;\n}\n"
 
 /***/ }),
-/* 90 */
+/* 97 */
 /***/ (function(module, exports) {
 
-module.exports = "#version 300 es\nprecision highp float;\n\nin vec4 fs_Col;\nin vec4 fs_Pos;\n\nout vec4 out_Col;\n\nvoid main()\n{\n    out_Col = vec4(0.0, 0.0, 0.0, 1.0);\n}\n"
+module.exports = "#version 300 es\nprecision highp float;\n\nin vec4 fs_Col;\nin vec4 fs_Pos;\n\nout vec4 out_Col;\n\nvoid main()\n{\n    out_Col = vec4(1.0, 0.0, 0.0, 1.0);\n}\n"
 
 /***/ })
 /******/ ]);
