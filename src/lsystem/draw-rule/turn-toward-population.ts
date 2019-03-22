@@ -18,7 +18,7 @@ export class TurnTowardPopulation extends BaseDrawRule implements DrawRule {
 
   draw(turtle: Turtle, turtleStack: Turtle[], segments: Segment[], options: string) {
     //default to the current turtle roll angle
-    let maxAngle:number = Math.PI / 20;
+    let maxAngle:number = Math.PI / 50;
 
     let bestDir = turtle.dir;
     let highestSum = this.checkPopulationAtDirection(turtle, turtle.dir);
@@ -51,7 +51,11 @@ export class TurnTowardPopulation extends BaseDrawRule implements DrawRule {
       let checkPoint: vec2 = vec2.create();
       checkPoint[0] = turtle.pos[0] + Math.cos(newDir) * dist;
       checkPoint[1] = turtle.pos[1] + Math.sin(newDir) * dist;
-      if(Math.abs(checkPoint[0]) < 1 && Math.abs(checkPoint[0]) < 1) {
+      if(
+        this.terrain.positionOnLand(turtle.pos)
+        && Math.abs(checkPoint[0]) < 1
+        && Math.abs(checkPoint[0]) < 1
+      ) {
         sum += this.terrain.getPopulationDensity(checkPoint) / i;
       }
     }

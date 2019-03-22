@@ -1,7 +1,7 @@
 import {XRule} from 'x-rule/x-rule';
 import {Turtle, RoadType, cloneTurtle} from './turtle';
 import {vec2} from "gl-matrix";
-import {Constraint} from "./constraint/constraint";
+import {Constraint, ConstraintAdjustment, WaterConstraint} from "./constraint/constraint";
 import {TurnRight} from "./draw-rule/turn-right";
 import {TurnLeft} from "./draw-rule/turn-left";
 import {RandomAngle} from "./draw-rule/random-angle";
@@ -41,7 +41,7 @@ export class LSystem {
   intersections: Intersection[] = [];
 
   //the constraints to check for each prospective segment
-  constraints: Constraint[];
+  constraints: Constraint[] = [];
 
   //the current number of interations
   curIteration: number;
@@ -114,12 +114,7 @@ export class LSystem {
   }
 
 
-  addSegment(startIntersectionId: number, endPos: vec2, rotation: number, roadType: RoadType):
-    {
-      added: boolean,
-      intersected: boolean,
-      segment: Segment | null
-    } {
+  addSegment(startIntersectionId: number, endPos: vec2, rotation: number, roadType: RoadType): ConstraintAdjustment {
     //create possible segment
     let segment: Segment = new Segment();
     let segmentId = this.segments.length;
@@ -129,6 +124,15 @@ export class LSystem {
     segment.endIntersectionId = this.intersections.length;
 
     //do the checks
+    for(let i = 0; i < this.constraints.length; i++) {
+      //check if constraint fails
+      if(!this.constraints[i].checkConstraint(segment, endPos)) {
+        //try to adjust it
+        let adj: ConstraintAdjustment = this.constraints[i].attemptAdjustment(segment, endPos);
+
+        if(!adj.added) return adj;
+      }
+    }
     let nearestIntersectionId = this.findNearbyIntersectionId(endPos, 0.02);
     if(nearestIntersectionId !== null) {
       segment.endIntersectionId = nearestIntersectionId;
@@ -210,9 +214,10 @@ export class LSystem {
           }
         }
 
-        // if(this.turtle && (!this.turtle.branchEnded || char == ']')) {
-            this.turtle = func.draw(this.turtle, this.turtleStack, this.segments, option);
-        // }
+        //if(!this.turtle.branchEnded || char == ']') {
+          this.turtle = func.draw(this.turtle, this.turtleStack, this.segments, option);
+       // }
+
       }
     }
   }
@@ -226,7 +231,6 @@ export class LSystem {
     this.addDrawRule('F', new Draw({lsystem: this, seed: 2}));
     this.addDrawRule('+', new TurnRight());
     this.addDrawRule('-', new TurnLeft());
-    this.addDrawRule('[', new StartBranch());
     this.addDrawRule(']', new EndBranch());
     this.addDrawRule('~', new RandomAngle({seed: 1}));
     this.addDrawRule('"', new ScaleLength());

@@ -6,6 +6,8 @@ import Terrain, {TerrainSection} from "../geometry/Terrain";
 import {TurnAwayPopulation} from "./draw-rule/turn-away-population";
 import {SpanPopulation} from "./draw-rule/span_population";
 import {RoadType, Turtle} from "./turtle";
+import {StartBranch} from "./draw-rule/start-branch";
+import {Constraint, WaterConstraint} from "./constraint/constraint";
 
 class RoadSection {
   terrainSection: TerrainSection;
@@ -43,10 +45,19 @@ class Roads extends LSystem {
       terrain: this.options.terrain
     }));
 
+    this.addDrawRule('[', new StartBranch({terrain: this.terrain}));
 
     this.addXRule('B', new XReplace('[-LB][+LB]'));
-    this.addXRule('L', new XReplace('FPFPFPFPF[--L]PFPFPFPFPFPFPFFPFPFPFPF[++L]PFPFPFPFPFL'));
-    this.addXRule('X', new XReplace('[-F[+F]F[+F]F[+F]F[+F]F[+F]F[+F]F[+F]F[+F]F[+F]F[+F]]'));
+    this.addXRule('L', new XReplace('FPFPFPFPF[--L]PFPFPFPF[-L]PFPFPFPFPPFPFPFPF[++L]PFPFPFPFPFL'));
+    this.addXRule('X', new XReplace('[-FX][FX][+FX]'));
+
+    this.addConstraint(new WaterConstraint({terrain: this.terrain, roads: this}));
+
+
+  }
+
+  addConstraint(constraint: Constraint) {
+    this.constraints.push(constraint);
   }
 
   addIntersection(intersection: Intersection) {
@@ -71,65 +82,29 @@ class Roads extends LSystem {
   }
 
   addNeighborhoods(): void {
-    this.turtle = new Turtle();
-    this.turtle.roadType = RoadType.STREET;
+    this.axiom = 'FXFFXFXFFX';
+    this.iterations = 5;
+    this.runExpansionIterations();
 
-    this.addNeighborhood(0, Math.PI / 4);
+    let numInt = this.intersections.length;
+    let numNeighborhoods = 1000;
+    for(let i = 0; i < numNeighborhoods; i++) {
+      let intId = Math.floor(i * numInt / numNeighborhoods);
+      this.addNeighborhood(intId, Math.PI * i / 6);
+    }
 
   }
 
   addNeighborhood(intersectionId: number, startDir: number) {
-    this.axiom = 'FXFFXFXFFX';
-    this.iterations = 10;
-    this.runExpansionIterations();
-    this.turtle.dir = startDir;
+    this.turtle = new Turtle();
     this.turtle.roadType = RoadType.STREET;
+    this.turtle.dir = startDir;
     this.turtle.lastIntersectionId = intersectionId;
     this.turtle.angle = Math.PI / 2;
+    this.turtle.pos = this.intersections[intersectionId].pos;
     this.runDrawRules();
 
   }
-
-  // addNeighborhood(intersectionId: number, startDir: number) {
-  //   this.addNeighborhood2(intersectionId, startDir);
-  //   let startPos: vec2 = this.intersections[intersectionId].pos;
-  //   let firstIndex = this.intersections.length;
-  //
-  //   for(let i = 0; i < 20; i++) {
-  //     for(let j = 0; j < 20; j++) {
-  //
-  //       let xStep = Math.cos(startDir)*i + Math.sin(startDir)*j;
-  //       let yStep = -Math.sin(startDir)*i + Math.cos(startDir)*j;
-  //       let intersection = new Intersection();
-  //       intersection.pos = vec2.create();
-  //       intersection.pos[0] = startPos[0] + xStep * 0.03;
-  //       // intersection.pos[0] = startPos[0] + i * Math.cos(startDir) * 0.1;
-  //       intersection.pos[1] = startPos[1] + yStep * 0.03;
-  //       // intersection.pos[1] = startPos[1] + j * Math.sin(startDir) * 0.1;
-  //
-  //       this.addIntersection(intersection);
-  //
-  //       if(i < 19 && j < 19) {
-  //         let seg1 = new Segment();
-  //         seg1.startIntersectionId = firstIndex + (i * 20) + j;
-  //         seg1.endIntersectionId = firstIndex + (i * 20) + j + 1;
-  //         seg1.rotation = startDir;
-  //         seg1.roadType = RoadType.STREET;
-  //         this.segments.push(seg1);
-  //
-  //         let seg2 = new Segment();
-  //         seg2.startIntersectionId = firstIndex + (i * 20) + j;
-  //         seg2.endIntersectionId = firstIndex + (i * 20) + j + 1;
-  //         seg2.rotation = startDir;
-  //         seg2.roadType = RoadType.STREET;
-  //         this.segments.push(seg1);
-  //       }
-  //
-  //     }
-  //   }
-  //
-  // }
-
 
 
 }

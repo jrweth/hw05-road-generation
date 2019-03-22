@@ -42,6 +42,5 @@ void main() {
     else {
       out_Col = vec4(vec3(fs_Col.g), 1.0);
     }
-      out_Col = vec4(vec3(fs_Col.g), 1.0);
   }
 }

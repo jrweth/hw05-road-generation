@@ -3,6 +3,7 @@ import Drawable from '../rendering/gl/Drawable';
 import {gl} from '../globals';
 import Noise from '../noise/noise';
 import {VecMath} from "../utils/vec-math";
+import Random from "../noise/random";
 
 export class TerrainSection {
   cornerElevation: number;
@@ -23,6 +24,7 @@ class Terrain extends Drawable {
   numPopultationPoints: vec2 = vec2.fromValues(4, 3);
   aspectRatio: number = 1;
   sectionGrid: TerrainSection[][] = [[]];
+  waterLine: number = 0.4;
 
   constructor() {
     super();
@@ -93,12 +95,45 @@ class Terrain extends Drawable {
     return 0;
   }
 
+  //get the elevation at a particular point
+  getElevation(screenPos: vec2): number {
+    let gridIndex: vec2 = this.screenPosToGridIndex(screenPos);
+    let gridPos: vec2 = this.screenPosToGridPos(screenPos);
+    let e1 = this.sectionGrid[gridIndex[0]][gridIndex[1]].cornerElevation;
+    let e2 = this.sectionGrid[gridIndex[0] + 1][gridIndex[1]].cornerElevation;
+    let e3 = this.sectionGrid[gridIndex[0]][gridIndex[1] + 1].cornerElevation;
+    let e4 = this.sectionGrid[gridIndex[0] + 1][gridIndex[1] + 1].cornerElevation;
+    console
+
+    let elevation = Random.interp2D(gridPos[0] % 1, gridPos[1] % 1, e1, e2, e3, e4);
+    return elevation;
+  }
+
+  positionOnLand(screenPos: vec2): boolean {
+    let gridIndex: vec2 = this.screenPosToGridIndex(screenPos);
+    if(this.sectionGrid[gridIndex[0]][gridIndex[1]].minElevation > this.waterLine) return true;
+   // if(this.getElevation(screenPos) > this.waterLine) return true;
+    return false;
+  }
+
+  //get the minimum elevation in the grid which contains the passed in screenPosition
+  getGridMinElevation(screenPos: vec2): number {
+    let gridIndex :vec2 = this.screenPosToGridIndex(screenPos);
+    return this.sectionGrid[gridIndex[0]][gridIndex[1]].minElevation;
+  }
+
   /**
    * loop through grid and calculate min elevation and avg density
    */
   calculateGridAggregates() {
     for(let i = 0; i < this.divisions[0]; i++) {
       for (let j = 0; j < this.divisions[1]; j++) {
+        console.log(Math.min(
+          this.sectionGrid[i][j].cornerElevation,
+          this.sectionGrid[i+1][j].cornerElevation,
+          this.sectionGrid[i][j+1].cornerElevation,
+          this.sectionGrid[i+1][j+1].cornerElevation,
+        ));
         this.setSectionGridAttribute(i, j, 'minElevation', Math.min(
           this.sectionGrid[i][j].cornerElevation,
           this.sectionGrid[i+1][j].cornerElevation,
@@ -111,16 +146,11 @@ class Terrain extends Drawable {
           this.sectionGrid[i][j+1].cornerElevation +
           this.sectionGrid[i+1][j+1].cornerElevation )/4
         );
-
       }
     }
+
   }
 
-  //get the elevation at a particular point
-  getElevation(screenPos: vec2): number {
-    let gridPos: vec2 = this.screenPosToGridPos(screenPos);
-    return gridPos[0];
-  }
 
   /**
    * Set the attribute of a section grid
@@ -142,6 +172,7 @@ class Terrain extends Drawable {
     if(attr == 'avgDensity')      this.sectionGrid[x][y].avgDensity      = value;
   }
 
+
   create() {
     let indicies: number[] = [];
     let positions: number[] = [];
@@ -160,6 +191,7 @@ class Terrain extends Drawable {
         //get eleation from fbm
         let seed: vec2 = vec2.fromValues(this.elevationSeed, 13.322);
         let elevation = Noise.fbm2to1(vec2.fromValues(3.0 * i / this.divisions[0] * this.aspectRatio, 3.0 * j / this.divisions[1]), seed);
+
 
         //get population density from worley noise
         let popDensity = this.getPopulationDensity(vec2.fromValues(x, y));
@@ -205,9 +237,7 @@ class Terrain extends Drawable {
 
     this.numInstances = 1;
 
-    console.log(this.sectionGrid);
     this.calculateGridAggregates();
-    console.log(`Created Terrain`);
   }
 };
 
