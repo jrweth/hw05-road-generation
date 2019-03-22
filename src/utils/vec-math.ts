@@ -90,4 +90,10 @@ export class VecMath {
     return Math.atan(dY/dX);
   }
 
+  public static clamp(val: number, min: number, max: number) {
+    if(val < min) return min;
+    if(val > max) return max;
+    return val;
+  }
+
 }

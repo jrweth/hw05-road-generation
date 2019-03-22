@@ -72,12 +72,6 @@ export class LSystem {
     this.options = options;
     this.curIteration = 0;
 
-    let firstIntersection: Intersection = new Intersection();
-    firstIntersection.inSegmentIds = [];
-    firstIntersection.outSegmentIds = [];
-    firstIntersection.pos = vec2.fromValues(0,0);
-    this.intersections.push(firstIntersection);
-    this.turtle.lastIntersectionId = 0;
 
   }
 
@@ -150,9 +144,13 @@ export class LSystem {
 
     this.intersections[startIntersectionId].outSegmentIds.push(this.segments.length);
     this.segments.push(segment);
-    this.intersections.push(endIntersection);
+    this.addIntersection(endIntersection);
 
     return segment;
+  }
+
+  addIntersection(intersection: Intersection) {
+    this.intersections.push(intersection);
   }
 
   findNearbyIntersectionId(pos: vec2, distThreshold: number): number | null {
@@ -169,6 +167,15 @@ export class LSystem {
   }
 
   runDrawRules() {
+
+    //add the first intersection
+    let firstIntersection: Intersection = new Intersection();
+    firstIntersection.inSegmentIds = [];
+    firstIntersection.outSegmentIds = [];
+    firstIntersection.pos = vec2.fromValues(0,0);
+    this.addIntersection(firstIntersection);
+    this.turtle.lastIntersectionId = 0;
+
     //do the initial scaling
     for(let charIndex:number = 0; charIndex < this.curString.length; charIndex++) {
       let char = this.curString.charAt(charIndex);

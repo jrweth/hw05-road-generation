@@ -17,7 +17,7 @@ import {VecMath} from "./utils/vec-math";
 const controls = {
   'Elevation Seed': 10,
   'Road Seed': 5,
-  'Map Type': 2,
+  'Map Type': 3,
   'Iterations': 7
 };
 
