@@ -18,7 +18,7 @@ export class TurnAwayPopulation extends BaseDrawRule implements DrawRule {
 
   draw(turtle: Turtle, turtleStack: Turtle[], segments: Segment[], options: string) {
     //default to the current turtle roll angle
-    let maxAngle = Math.PI / 4;
+    let maxAngle = Math.PI / 12;
 
     let bestDir = turtle.dir;
     let lowestSum = this.checkPopulationAtDirection(turtle, turtle.dir);

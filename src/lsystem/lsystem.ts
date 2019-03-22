@@ -114,7 +114,12 @@ export class LSystem {
   }
 
 
-  addSegment(startIntersectionId: number, endPos: vec2, rotation: number, roadType: RoadType): Segment | null {
+  addSegment(startIntersectionId: number, endPos: vec2, rotation: number, roadType: RoadType):
+    {
+      added: boolean,
+      intersected: boolean,
+      segment: Segment | null
+    } {
     //create possible segment
     let segment: Segment = new Segment();
     let segmentId = this.segments.length;
@@ -134,7 +139,11 @@ export class LSystem {
       this.segments.push(segment);
       this.intersections[startIntersectionId].outSegmentIds.push(segmentId);
       this.intersections[nearestIntersectionId].inSegmentIds.push(segmentId);
-      return null;
+      return {
+        added: true,
+        intersected: true,
+        segment: segment
+      };
     }
 
     let endIntersection = new Intersection();
@@ -146,7 +155,11 @@ export class LSystem {
     this.segments.push(segment);
     this.addIntersection(endIntersection);
 
-    return segment;
+    return {
+      added: true,
+      intersected: false,
+      segment: segment
+    };
   }
 
   addIntersection(intersection: Intersection) {
@@ -166,8 +179,7 @@ export class LSystem {
     return closestId;
   }
 
-  runDrawRules() {
-
+  setStartPosition() {
     //add the first intersection
     let firstIntersection: Intersection = new Intersection();
     firstIntersection.inSegmentIds = [];
@@ -175,6 +187,10 @@ export class LSystem {
     firstIntersection.pos = vec2.fromValues(0,0);
     this.addIntersection(firstIntersection);
     this.turtle.lastIntersectionId = 0;
+  }
+
+  runDrawRules() {
+    if(this.intersections.length == 0) this.setStartPosition();
 
     //do the initial scaling
     for(let charIndex:number = 0; charIndex < this.curString.length; charIndex++) {
@@ -194,9 +210,9 @@ export class LSystem {
           }
         }
 
-        if(this.turtle && (!this.turtle.branchEnded || char == ']')) {
+        // if(this.turtle && (!this.turtle.branchEnded || char == ']')) {
             this.turtle = func.draw(this.turtle, this.turtleStack, this.segments, option);
-        }
+        // }
       }
     }
   }
@@ -207,7 +223,7 @@ export class LSystem {
    * Add the standard rules based off Houdini codes
    */
   addStandardDrawRules(): void {
-    this.addDrawRule('F', new Draw({lsystem: this}));
+    this.addDrawRule('F', new Draw({lsystem: this, seed: 2}));
     this.addDrawRule('+', new TurnRight());
     this.addDrawRule('-', new TurnLeft());
     this.addDrawRule('[', new StartBranch());

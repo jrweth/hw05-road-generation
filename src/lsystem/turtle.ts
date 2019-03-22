@@ -3,7 +3,7 @@ import {vec2} from 'gl-matrix';
 
 export enum RoadType {
   HIGHWAY = 1,
-  ROAD = 2,
+  STREET = 2,
 }
 
 /**
@@ -20,7 +20,7 @@ export class Turtle {
   //the type of road
   roadType: RoadType = RoadType.HIGHWAY;
 
-  segmentLength: number = 0.055;
+  segmentLength: number = 0.035;
   lengthScale: number = 0.9;
 
   angle: number = Math.PI / 4;

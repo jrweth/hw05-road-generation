@@ -53,7 +53,7 @@ class RoadSegments extends InstancedDrawable {
 
       switch(segments[i].roadType) {
         case RoadType.HIGHWAY: width = 0.01; break
-        case RoadType.ROAD:    width = 0.005; break
+        case RoadType.STREET:    width = 0.005; break
       }
       length = vec2.dist(startPos, endPos);
       colors.push(length, width, segments[i].rotation, 0);

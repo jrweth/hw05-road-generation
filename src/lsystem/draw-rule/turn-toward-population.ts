@@ -18,7 +18,7 @@ export class TurnTowardPopulation extends BaseDrawRule implements DrawRule {
 
   draw(turtle: Turtle, turtleStack: Turtle[], segments: Segment[], options: string) {
     //default to the current turtle roll angle
-    let maxAngle:number = Math.PI / 8;
+    let maxAngle:number = Math.PI / 20;
 
     let bestDir = turtle.dir;
     let highestSum = this.checkPopulationAtDirection(turtle, turtle.dir);

@@ -18,7 +18,7 @@ const controls = {
   'Elevation Seed': 10,
   'Road Seed': 5,
   'Map Type': 3,
-  'Iterations': 7
+  'Iterations': 5
 };
 
 //gui controls
@@ -54,7 +54,7 @@ let terrainShader: ShaderProgram;
 let roadShader: InstancedShaderProgram;
 
 //road lsystem
-let roadLSystem: LSystem;
+let roadLSystem: Roads;
 
 function loadScene() {
   let aspectRatio: number = window.innerWidth / window.innerHeight;
@@ -64,7 +64,7 @@ function loadScene() {
 
   terrain = new Terrain();
   //terrain.setDivisions(divisions);
-  //terrain.setDimensions(dimensions);
+  terrain.setDimensions(dimensions);
   terrain.setElevationSeed(controls["Elevation Seed"]);
   terrain.create();
 
@@ -76,6 +76,7 @@ function loadScene() {
   });
   roadLSystem.runExpansionIterations();
   roadLSystem.runDrawRules();
+  roadLSystem.addNeighborhoods();
   roadSegments.setInstanceVBOs(roadLSystem.segments, roadLSystem.intersections);
 
 }
