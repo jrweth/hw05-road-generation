@@ -128,29 +128,39 @@ class Terrain extends Drawable {
   calculateGridAggregates() {
     for(let i = 0; i < this.divisions[0]; i++) {
       for (let j = 0; j < this.divisions[1]; j++) {
-        console.log(Math.min(
+        let  minElevation = Math.min(
           this.sectionGrid[i][j].cornerElevation,
           this.sectionGrid[i+1][j].cornerElevation,
           this.sectionGrid[i][j+1].cornerElevation,
           this.sectionGrid[i+1][j+1].cornerElevation,
-        ));
-        this.setSectionGridAttribute(i, j, 'minElevation', Math.min(
-          this.sectionGrid[i][j].cornerElevation,
-          this.sectionGrid[i+1][j].cornerElevation,
-          this.sectionGrid[i][j+1].cornerElevation,
-          this.sectionGrid[i+1][j+1].cornerElevation,
-        ));
-        this.setSectionGridAttribute(i, j, 'avgDensity',(
-          this.sectionGrid[i][j].cornerElevation +
-          this.sectionGrid[i+1][j].cornerElevation +
-          this.sectionGrid[i][j+1].cornerElevation +
-          this.sectionGrid[i+1][j+1].cornerElevation )/4
         );
+        this.setSectionGridAttribute(i, j, 'minElevation',minElevation);
+
+        let avgDensity = (
+            this.sectionGrid[i][j].cornerElevation +
+            this.sectionGrid[i+1][j].cornerElevation +
+            this.sectionGrid[i][j+1].cornerElevation +
+            this.sectionGrid[i+1][j+1].cornerElevation
+        )/4;
+        this.setSectionGridAttribute(i, j, 'avgDensity', avgDensity);
       }
     }
 
   }
 
+
+  getGridSectionsWithHighPopulation(threshold: number): vec2[] {
+    let sections: vec2[] = [];
+
+    for(let i = 0; i < this.divisions[0]; i++) {
+      for(let j = 0; j < this.divisions[1]; j++) {
+        if(this.sectionGrid[i][j].avgDensity >= threshold) {
+          sections.push(vec2.fromValues(i, j));
+        }
+      }
+    }
+    return sections;
+  }
 
   /**
    * Set the attribute of a section grid

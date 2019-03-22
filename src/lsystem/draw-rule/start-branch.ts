@@ -16,7 +16,6 @@ export class StartBranch extends BaseDrawRule implements DrawRule {
   draw(turtle: Turtle, turtleStack: Turtle[], segments: Segment[] ) {
     turtleStack.push(cloneTurtle(turtle));
     if(!this.terrain.positionOnLand(turtle.pos)) {
-    //if(false) {
       turtle.branchEnded = true;
     }
     return turtle;

@@ -1,7 +1,7 @@
 import {XRule} from 'x-rule/x-rule';
 import {Turtle, RoadType, cloneTurtle} from './turtle';
 import {vec2} from "gl-matrix";
-import {Constraint, ConstraintAdjustment, WaterConstraint} from "./constraint/constraint";
+import {Constraint, ConstraintAdjustment} from "./constraint/constraint";
 import {TurnRight} from "./draw-rule/turn-right";
 import {TurnLeft} from "./draw-rule/turn-left";
 import {RandomAngle} from "./draw-rule/random-angle";
@@ -26,8 +26,7 @@ export class Segment{
 }
 
 export class Intersection {
-  inSegmentIds: number[];
-  outSegmentIds: number[];
+  segmentIds: number[];
   pos: vec2;
 }
 
@@ -143,8 +142,8 @@ export class LSystem {
         this.intersections[nearestIntersectionId].pos
       )
       this.segments.push(segment);
-      this.intersections[startIntersectionId].outSegmentIds.push(segmentId);
-      this.intersections[nearestIntersectionId].inSegmentIds.push(segmentId);
+      this.intersections[startIntersectionId].segmentIds.push(segmentId);
+      this.intersections[nearestIntersectionId].segmentIds.push(segmentId);
       return {
         added: true,
         intersected: true,
@@ -154,10 +153,9 @@ export class LSystem {
 
     let endIntersection = new Intersection();
     endIntersection.pos = endPos;
-    endIntersection.inSegmentIds = [segmentId];
-    endIntersection.outSegmentIds = [];
+    endIntersection.segmentIds = [segmentId];
 
-    this.intersections[startIntersectionId].outSegmentIds.push(this.segments.length);
+    this.intersections[startIntersectionId].segmentIds.push(this.segments.length);
     this.segments.push(segment);
     this.addIntersection(endIntersection);
 
@@ -188,8 +186,7 @@ export class LSystem {
   setStartPosition() {
     //add the first intersection
     let firstIntersection: Intersection = new Intersection();
-    firstIntersection.inSegmentIds = [];
-    firstIntersection.outSegmentIds = [];
+    firstIntersection.segmentIds = [];
     firstIntersection.pos = vec2.fromValues(0,0);
     this.addIntersection(firstIntersection);
     this.turtle.lastIntersectionId = 0;

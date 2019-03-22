@@ -17,31 +17,3 @@ export interface Constraint {
 }
 
 
-export class WaterConstraint implements Constraint {
-  terrain: Terrain;
-  roads: Roads;
-  constructor(options: {terrain: Terrain, roads: Roads}) {
-    this.terrain = options.terrain;
-    this.roads = options.roads;
-  }
-
-  checkConstraint(segment: Segment, endPos: vec2): boolean {
-    if(segment.roadType == RoadType.STREET) {
-      console.log('checking water constraint');
-      if(!this.terrain.positionOnLand(endPos)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  attemptAdjustment(segment: Segment, endPos: vec2): ConstraintAdjustment {
-    let adj = new ConstraintAdjustment();
-    adj.added = false;
-    adj.intersected = false;{
-      false
-    };
-
-    return adj;
-  }
-}

@@ -7,7 +7,9 @@ import {TurnAwayPopulation} from "./draw-rule/turn-away-population";
 import {SpanPopulation} from "./draw-rule/span_population";
 import {RoadType, Turtle} from "./turtle";
 import {StartBranch} from "./draw-rule/start-branch";
-import {Constraint, WaterConstraint} from "./constraint/constraint";
+import {Constraint} from "./constraint/constraint";
+import {WaterConstraint} from "./constraint/water-constraint";
+import {EdgeOfMapConstraint} from "./constraint/edge-of-map-constraint";
 
 class RoadSection {
   terrainSection: TerrainSection;
@@ -47,11 +49,12 @@ class Roads extends LSystem {
 
     this.addDrawRule('[', new StartBranch({terrain: this.terrain}));
 
-    this.addXRule('B', new XReplace('[-LB][+LB]'));
-    this.addXRule('L', new XReplace('FPFPFPFPF[--L]PFPFPFPF[-L]PFPFPFPFPPFPFPFPF[++L]PFPFPFPFPFL'));
-    this.addXRule('X', new XReplace('[-FX][FX][+FX]'));
+    this.addXRule('A', new XReplace('FPFPFPFPFPFjjjPFPFPFPFPF'));
+    this.addXRule('L', new XReplace('A[--L]A[++L]A[--L]A[++L]AA[--L]A[++L]A'));
 
+    //
     this.addConstraint(new WaterConstraint({terrain: this.terrain, roads: this}));
+    this.addConstraint(new EdgeOfMapConstraint({roads: this}));
 
 
   }
@@ -83,6 +86,7 @@ class Roads extends LSystem {
 
   addNeighborhoods(): void {
     this.axiom = 'FXFFXFXFFX';
+    this.addXRule('X', new XReplace('[-FX][FX][+FX]'));
     this.iterations = 5;
     this.runExpansionIterations();
 
